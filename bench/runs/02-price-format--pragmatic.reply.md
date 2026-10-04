@@ -1,0 +1,1 @@
+Fixed in `src/lib/money.ts`: `formatBRL` now uses `toLocaleString("pt-BR")` with 2 fraction digits, so 123450 cents gives "R$ 1.234,50". The checkout total, cart subtotal and receipt email all call this one function, so all three are fixed. I added `src/lib/money.test.ts` and `bun test` passes. -> skipped: negative amounts and other currencies, add when the app needs them.

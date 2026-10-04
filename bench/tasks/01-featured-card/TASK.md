@@ -1,0 +1,1 @@
+Make the featured project card stand out on the projects page: give it a thicker yellow (brand) border and a bit more space between its title and its description. Only the featured card should change.

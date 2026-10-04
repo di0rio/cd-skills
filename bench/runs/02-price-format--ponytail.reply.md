@@ -1,0 +1,1 @@
+Fixed in `src/lib/money.ts`: `formatBRL` now uses `toLocaleString("pt-BR", 2 decimals)`, so 123450 cents gives "R$ 1.234,50". It was the shared formatter, so the cart summary and receipt email are fixed too. Added `src/lib/money.test.ts` as a regression check; `bun test` passes.

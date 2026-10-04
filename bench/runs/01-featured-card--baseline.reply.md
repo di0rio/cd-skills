@@ -1,0 +1,1 @@
+Featured card now has a 4px yellow (brand) border and more space under the title (mt-3 instead of mt-1). Other cards unchanged. Edit is in src/components/project-card.tsx, keyed off project.featured. Not run or visually checked.
