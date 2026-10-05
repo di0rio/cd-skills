@@ -58,9 +58,9 @@ Any other agent: paste the body of `SKILL.md` into your rules file (`AGENTS.md`,
 
 ## How I tested it
 
-The numbers in [`bench/`](bench/) were measured with the previous version of this skill, `pragmatic-code` (it lived at `skills/pragmatic-code/SKILL.md`, see git history). **They have not been re-run for `clean-code-ai`.**
+I ran five small tasks (a styling change, a bug with several callers, a feature that tempts a new dependency, a "simplify this" handler with auth and validation, and dead-code cleanup) with no rules, with another "do less" skill, with the previous version of this skill (`pragmatic-code`) and with clean-code-ai, then had a separate model score all attempts blind.
 
-I ran five small tasks (a styling change, a bug with several callers, a feature that tempts a new dependency, a "simplify this" handler with auth and validation, and dead-code cleanup) with no rules, with another "do less" skill and with pragmatic-code, then had a separate model score the attempts blind.
+Result, out of 200: clean-code-ai 191, pragmatic-code 190, no rules 176, the other skill 166. clean-code-ai and pragmatic-code are a tie within noise; the gain over no rules comes mostly from the dead-code and styling tasks. Details in [`bench/RESULTS.md`](bench/RESULTS.md).
 
 It is a smoke test, not proof: one run per setup, an LLM judge, and tasks I wrote myself around the failure modes above. The tasks, raw outputs and verdict are in [`bench/`](bench/) so anyone can rerun or challenge them. Pull requests with new tasks are welcome, especially ones where the skill does worse.
 

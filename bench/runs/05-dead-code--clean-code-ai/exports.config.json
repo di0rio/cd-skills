@@ -1,0 +1,6 @@
+{
+	"exports": [
+		{ "name": "daily.csv", "formatter": "toCsv" },
+		{ "name": "partner-legacy.tsv", "formatter": "toLegacyTsv" }
+	]
+}

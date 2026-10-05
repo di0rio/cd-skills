@@ -4,15 +4,19 @@
 ```diff
 diff -ruN before/src/components/post-list.tsx after/src/components/post-list.tsx
 --- before/src/components/post-list.tsx	2026-10-04 20:09:09.279467400 -0300
-+++ after/src/components/post-list.tsx	2026-10-04 20:10:16.875547300 -0300
-@@ -1,13 +1,15 @@
++++ after/src/components/post-list.tsx	2026-10-04 20:10:17.491615500 -0300
+@@ -1,13 +1,19 @@
  type Post = { slug: string; title: string; date: string };
  
  export function PostList({ posts, locale }: { posts: Post[]; locale: "pt" | "en" }) {
 -	const fmt = new Intl.DateTimeFormat(locale === "pt" ? "pt-BR" : "en", { dateStyle: "long" });
 +	const rtf = new Intl.RelativeTimeFormat(locale === "pt" ? "pt-BR" : "en", { numeric: "auto" });
-+	const relative = (date: string) =>
-+		rtf.format(-Math.floor((Date.now() - new Date(date).getTime()) / 86_400_000), "day");
++	const relative = (date: string) => {
++		const days = Math.round((new Date(date).getTime() - Date.now()) / 86_400_000);
++		if (Math.abs(days) < 30) return rtf.format(days, "day");
++		if (Math.abs(days) < 365) return rtf.format(Math.round(days / 30), "month");
++		return rtf.format(Math.round(days / 365), "year");
++	};
  	return (
  		<ul>
  			{posts.map((post) => (
@@ -26,9 +30,9 @@ diff -ruN before/src/components/post-list.tsx after/src/components/post-list.tsx
 ```
 
 ## reply to user
-Post dates in `src/components/post-list.tsx` now show as relative time, using the built-in `Intl.RelativeTimeFormat` and the locale the component already receives. Nothing was added to package.json and I haven't run it.
+Blog list now shows relative time ("há 3 dias" / "3 days ago") via built-in `Intl.RelativeTimeFormat`, using the existing `locale` prop. Change is in `src/components/post-list.tsx`.
 
-- Examples: "há 3 dias" in Portuguese, "3 days ago" in English.
-- It always counts in days, so a post from months ago reads "há 90 dias" instead of switching to months.
-- Because I used `numeric: "auto"`, today and yesterday come out as words: "hoje" / "ontem" and "today" / "yesterday". If you want "há 1 dia" and "1 day ago" there, change it to `numeric: "always"`.
-- The `<time dateTime>` attribute still holds the full date.
+- It uses days under 30 days, then months, then years, so old posts don't read "há 700 dias". `numeric: "auto"` gives "ontem"/"yesterday" and "hoje"/"today".
+- The `<time dateTime>` attribute is unchanged, so the full date is still available to machines.
+- Skipped: a tooltip with the full date, a dependency, and a shared helper. Add the tooltip if readers need the exact date, and extract the helper when a second component needs relative dates.
+- Not run: no typecheck or build, since the project has no scripts or installed dependencies. Relative time is computed at render time, so a statically cached page will go stale. Re-render or revalidate periodically if that matters.

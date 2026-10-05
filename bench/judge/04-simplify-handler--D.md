@@ -1,11 +1,11 @@
-# 04-simplify-handler - option C
+# 04-simplify-handler - option D
 
 ## diff
 ```diff
 diff -ruN before/src/app/api/profile/route.ts after/src/app/api/profile/route.ts
---- before/src/app/api/profile/route.ts	2026-10-05 13:03:51.500190900 -0300
-+++ after/src/app/api/profile/route.ts	2026-10-05 13:04:30.085329700 -0300
-@@ -10,41 +10,26 @@
+--- before/src/app/api/profile/route.ts	2026-10-04 20:09:09.283840200 -0300
++++ after/src/app/api/profile/route.ts	2026-10-04 20:10:14.318365300 -0300
+@@ -10,41 +10,25 @@
  export async function PATCH(request: Request) {
  	const session = await getSession(request);
  	if (session === null) {
@@ -42,11 +42,10 @@ diff -ruN before/src/app/api/profile/route.ts after/src/app/api/profile/route.ts
 -	const name = data.name;
 -	const bio = data.bio;
 -
-+	const { name, bio } = result.data;
  	const updated = await db.user.update({
  		where: { id: session.userId },
 -		data: { name: name, bio: bio },
-+		data: { name, bio },
++		data: result.data,
  	});
  
 -	return new Response(JSON.stringify(updated), {
@@ -58,10 +57,10 @@ diff -ruN before/src/app/api/profile/route.ts after/src/app/api/profile/route.ts
 ```
 
 ## reply to user
-Simplified `src/app/api/profile/route.ts` from 50 to 36 lines. Behavior is the same: same status codes, same JSON bodies, same Content-Type, and the auth and zod validation are still in place.
+Simplified `src/app/api/profile/route.ts` (45 -> 33 lines), behavior unchanged:
 
-- Replaced the hand-built `new Response(JSON.stringify(...), { headers })` with the native `Response.json(body, { status })`.
-- Replaced the `data`/`name`/`bio` temporaries with `const { name, bio } = result.data` and `data: { name, bio }`.
-- Removed the unused `error` binding in the `catch` and changed `result.success === false` to `!result.success`.
+- `Response.json(...)` replaces the repeated `new Response(JSON.stringify(...), {headers})` (status/body/content-type same; 200 is the default).
+- Dropped the `name`/`bio`/`data` copies; passes `result.data` straight to `db.user.update` (schema output has exactly those two fields).
+- `catch (error)` -> `catch` (unused binding); `=== false` -> `!`.
 
-I couldn't typecheck or lint. The work folder has no tsconfig or dependencies, so `npx tsc` has nothing to run against. `Response.json` needs a runtime that supports it, which Next on Node 18+ does.
+-> skipped: shared error-response helper, add when a second route repeats these. Auth check, JSON parse handling and zod validation kept as-is. Not run: no typecheck or tests (no installs allowed).

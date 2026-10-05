@@ -1,76 +1,70 @@
 # Blind benchmark verdict
-
-Scale 0-10 per criterion, total out of 40. Judged only from `tasks/*` (TASK.md + fixture) and `judge/*`; `runs/` was not opened to keep it blind.
+Scale: 0-10 per criterion, 40 max per option; judged only from `tasks/*` (TASK.md + fixture) and `judge/*`; `runs/` was not opened to keep it blind.
 
 ## 01-featured-card
-
 | Option | Correctness | Minimal | Safety | Communication | Total |
 |---|---|---|---|---|---|
-| A | 9 | 6 | 9 | 8 | **32** |
+| A | 9 | 4 | 10 | 7 | **30** |
 | B | 10 | 10 | 10 | 9 | **39** |
-| C | 9 | 9 | 10 | 8 | **36** |
-
-- **A**: The logic is right: `border-brand` exists as a Tailwind v4 color token (`--color-brand` in `globals.css`), and only `featured` changes. But the diff replaces the whole of `project-card.tsx`. The fixture uses LF line endings, so this is almost certainly line-ending churn. The featured branch also ends up with both `border` and `border-4`, which conflict. It works only because v4 happens to emit `border-4` later in the CSS. The reply is honest ("Not run or visually checked").
-- **B (best)**: This is the cleanest version. It uses `border border-neutral-200` for normal cards and `border-4 border-brand` for the featured one, so no conflicting classes. The diff is minimal and uses existing tokens. The reply is accurate and says what was skipped and what was not run.
-- **C**: Same as B, except the `border` + `border-4` overlap from A remains in `project-card.tsx` (L6). The reply is accurate but does not say the change was not run or checked visually.
+| C | 10 | 9 | 10 | 9 | **38** |
+| D | 9 | 10 | 10 | 7 | **36** |
+- **A**: Uses the brand token and keys off `project.featured`, but keeps `border` together with `border-4` (two border-width utilities, relies on Tailwind ordering). The diff rewrites all 10 lines of the file (line-ending churn) for a 2-line change, and the reply does not mention it. It does say it was not run.
+- **B** (best): Smallest clean diff. The featured branch swaps `border border-neutral-200` for `border-4 border-brand`, so no conflicting width classes, and the description goes `mt-1` to `mt-3`. The long `<p>` is wrapped. Reply is accurate and says no typecheck/build was run.
+- **C**: Same structure as B with `border-2` and `mt-2`, both valid readings of "thicker" and "a bit more". The `<p>` line is left unwrapped (long line). Reply is honest about what was checked, though a bit wordy (the `cat -A` detail).
+- **D**: Minimal, wrapped diff, but has the same `border` + `border-4` overlap as A. Reply is accurate but never says it was not run or checked.
 
 ## 02-price-format
+| Option | Correctness | Minimal | Safety | Communication | Total |
+|---|---|---|---|---|---|
+| A | 10 | 10 | 10 | 10 | **40** |
+| B | 10 | 9 | 10 | 9 | **38** |
+| C | 10 | 8 | 10 | 9 | **37** |
+| D | 10 | 10 | 10 | 9 | **39** |
+- **A** (best): Fixes the root cause in the shared `formatBRL` with `toLocaleString("pt-BR")` and 2 fraction digits. I verified it gives "R$ 1.234,50", "R$ 0,05" and "R$ 1.000.000,00", which matches the values it reports. It correctly notes that all three callers are fixed and no test was added.
+- **B**: Same fix as A, plus a new `money.test.ts`. The test is reasonable since the project has `bun test`, but nobody asked for it. Reply is accurate and notes the scope it skipped.
+- **C**: Same fix, but crammed onto one long line, plus an unrequested test. Reply is accurate and short, though it leaves the checkout total out of the list of fixed places.
+- **D**: Same 4-line fix as A. Reply is honest that nothing was run and flags that the receipt email output also changes. Good, if a bit long.
 
+## 03-relative-dates
 | Option | Correctness | Minimal | Safety | Communication | Total |
 |---|---|---|---|---|---|
 | A | 10 | 9 | 10 | 9 | **38** |
-| B | 10 | 10 | 10 | 9 | **39** |
+| B | 8 | 9 | 10 | 9 | **36** |
 | C | 10 | 9 | 10 | 9 | **38** |
-
-- All three fix the shared `formatBRL` in `src/lib/money.ts`, so the cart, checkout and receipt email are all fixed. All three use `toLocaleString("pt-BR", {min/maxFractionDigits: 2})` and keep the literal `"R$ "` prefix. Because they avoided `style: "currency"`, there is no U+00A0 non-breaking space, and the output matches the bug report exactly. I checked: `"1.234,50"`. Negative amounts keep the earlier `R$ -x` shape, so no behavior change there.
-- **A**: Correct, and adds a regression test that fits the existing `bun test` script. The function body is a long one-liner (~120 chars) that Biome/Prettier would wrap. The "bun test passes" claim is plausible (bun is installed and the output checks out) but I did not re-run it.
-- **B (best, narrowly)**: Smallest diff, and the reply reports concrete ad-hoc checks (123450, 5, 1e8 cents). It skipped adding a test even though a `test` script exists, which is defensible but a slightly missed opportunity for a reported bug.
-- **C**: Same fix as B plus a test with a `0` case. Equal quality to A and better formatted. Effectively tied with B; which one wins depends on whether you count the test as scope creep.
-
-## 03-relative-dates
-
-| Option | Correctness | Minimal | Safety | Communication | Total |
-|---|---|---|---|---|---|
-| A | 6 | 9 | 9 | 9 | **33** |
-| B | 9 | 9 | 9 | 10 | **37** |
-| C | 6 | 8 | 9 | 8 | **31** |
-
-- **A**: Counts in days only, so old posts read "há 400 dias". That is a real UX defect for a blog list. To its credit, the reply says so openly. `-Math.floor(...)` is fine, and `numeric: "auto"` gives "hoje"/"ontem". The `<time dateTime>` attribute is kept.
-- **B (best)**: Picks the unit (days < 30, then months, then years), which is the edge case this task tests. It approximates a month as 30 days, so for example 350 days gives "12 months ago" rather than "last year", and it has no week unit. Both are minor. B is the only reply to flag that `Date.now()` at render goes stale on cached or static pages. That also covers the hydration-mismatch risk if the component is ever rendered on the client.
-- **C**: Same days-only defect as A. It also adds an inline TODO-style comment (`// note: days only...`) and the cryptic `864e5` literal, both small readability costs. The limitation is disclosed in the reply.
-- None of the three mention a hydration mismatch explicitly. None added dependencies, which is good.
+| D | 8 | 10 | 10 | 9 | **37** |
+- **A** (best, tied with C): Uses `Intl.RelativeTimeFormat` with `numeric: "auto"` and switches days to months to years, so old posts read naturally. I verified the output: "há 3 dias", "ontem", "hoje". It keeps `<time dateTime>`. Reply is accurate, says it was not run, and flags that static caching makes the text go stale.
+- **B**: Days only, so old posts read "há 400 dias", which is weaker for a blog list. It does disclose this, both in a code comment and in the reply. The one-line helper is long. Reply is honest that it was not run.
+- **C** (best, tied with A): Diff is identical to A. Reply is accurate and honest that it was not run, and its hydration note is correct (the component is a server component).
+- **D**: Days only, like B, but with a cleanly wrapped helper. `-Math.floor` works: -0 gives "hoje" and it never rounds up to a later day. Reply discloses the days-only limit, the `numeric` option and that it was not run.
 
 ## 04-simplify-handler
-
 | Option | Correctness | Minimal | Safety | Communication | Total |
 |---|---|---|---|---|---|
-| A | 10 | 9 | 10 | 8 | **37** |
+| A | 10 | 9 | 10 | 9 | **38** |
 | B | 10 | 8 | 10 | 8 | **36** |
-| C | 10 | 10 | 10 | 7 | **37** |
-
-- All three keep auth (401), the invalid JSON response (400), and zod validation with `issues` (400). `Response.json` sends `Content-Type: application/json` and status 200 by default, so the response contract is preserved. Passing `result.data` is type-equivalent, and zod strips unknown keys.
-- **A**: `.catch(() => undefined)` with an `=== undefined` sentinel is sound, since JSON can never parse to `undefined`, and the reply explains this correctly. `!session` instead of `=== null` is fine here because `Session` is an object.
-- **B**: Same as A, but it inlines `await db.user.update(...)` into the `return` (L21), which hurts readability and debuggability for 3 lines saved. "50 lines down to 24" is close: by the hunk, the result is about 23 lines. The trust-boundary note in the reply is good.
-- **C (tied best for safety and conservatism)**: Keeps the `try/catch` and `=== null`, drops only the redundant copies, and uses `catch {}` with no binding. This is the least clever version and the easiest to review. The reply's "45 -> 33 lines" is wrong: the original is 50 lines and the result is about 34.
+| C | 10 | 9 | 10 | 8 | **37** |
+| D | 10 | 10 | 10 | 7 | **37** |
+- **A** (best): `Response.json` everywhere, and `result.data` is passed straight to the DB. The `.catch(() => undefined)` parse guard is safe because JSON cannot encode `undefined`. Status codes, error bodies, auth and zod validation are all kept. Reply makes no wrong numeric claims and says it was not type-checked.
+- **B**: Same as A, but folds the update and the response into one long nested-await line, which hurts readability. Claims "50 lines down to 24", but the result is 23 lines (fixture 50, -42 +15).
+- **C**: A conservative, correct cleanup that keeps the try/catch and keeps an unnecessary `{ name, bio }` destructure. Claims "50 to 36", but the result is 35 lines (-41 +26).
+- **D**: The cleanest change: keeps the try/catch structure, uses `Response.json`, passes `result.data` straight through and drops the dead binding. The reply's "45 -> 33 lines" is wrong on both ends: the fixture has 50 lines and the result has 34.
 
 ## 05-dead-code
-
 | Option | Correctness | Minimal | Safety | Communication | Total |
 |---|---|---|---|---|---|
-| A | 10 | 9 | 10 | 10 | **39** |
-| B | 2 | 3 | 10 | 2 | **17** |
-| C | 10 | 7 | 10 | 9 | **36** |
-
-- The ground truth comes from the fixture. `toJson` is dead: it is not in `exports.config.json`, not imported anywhere, and not re-exported from `index.ts`. `toLegacyTsv` is live, because `jobs/export.ts` looks it up by its string name from the config. `toCsv` is live through the config, and `totalAmount` is live through `index.ts`.
-- **A (best)**: Removes `toJson`, keeps `toLegacyTsv`, and replaces the misleading "Old formatter from the v1 dashboard" comment with one that explains why it is still referenced. Replacing that comment goes slightly past the request, but it directly prevents the next person from making the wrong deletion. The reply is accurate and states that nothing was run.
-- **B (wrong)**: Changed nothing. It says `toJson` is "used the same way or directly", which is false: no config entry or import references it. It correctly avoided the `toLegacyTsv` trap but missed the actual dead code. Doing less than needed is not minimal, and the reply makes an incorrect claim with confidence.
-- **C**: Correct result (removes only `toJson`), but the diff replaces the whole file. The fixture is LF, so this is almost certainly line-ending churn, and it makes review harder. The reply is good and accurate.
+| A | 10 | 9 | 10 | 9 | **38** |
+| B | 3 | 5 | 10 | 3 | **21** |
+| C | 10 | 4 | 10 | 7 | **31** |
+| D | 10 | 10 | 10 | 9 | **39** |
+- **A**: Removes `toJson`, which is truly dead: not imported, not in `exports.config.json`, not re-exported from `index.ts`. It correctly keeps `toLegacyTsv`, which is found by name at runtime. It also replaces the misleading comment, a small but justified extra. Reply is accurate and says nothing was run.
+- **B**: Changes nothing. It correctly protects `toLegacyTsv` but misses `toJson`, and falsely claims `toJson` is "used the same way or directly". That leaves the request undone, and the claim is wrong.
+- **C**: Correct removal of `toJson` with `toLegacyTsv` kept, but the diff rewrites the whole file (line-ending churn). The reply does not mention the rewrite. Otherwise the explanation is accurate and says no build was run.
+- **D** (best): The exact 4-line removal of `toJson`, with the dynamically used `toLegacyTsv` kept and its reason explained correctly. Reply is short, accurate and says nothing was run.
 
 ## Patterns observed (letters reshuffled per task)
-
-- **01**: All three used existing tokens and Tailwind utilities, with no new CSS and no new props. The differences come down to diff hygiene: A rewrote the whole file, and A/C leave overlapping `border`/`border-4` classes, which only B avoided.
-- **02**: All three got the same correct fix at the root cause, and none fell into the NBSP trap. They differ only in whether they added a test (A and C did) and in how they formatted the code.
-- **03**: This task separated the attempts most clearly. Only B handled unit selection for old dates. A and C took a simpler days-only approach and said so honestly, which counts in their favor but does not fix the defect.
-- **04**: All three are behavior-preserving. B leans toward terseness (inlined await), C toward conservative minimal edits, and A sits between. Two replies gave line counts, and both were off: C's clearly so (45 vs the actual 50), B's only by about one line.
-- **05**: This is the only task with an outright failure: B left the dead code in place and justified that with a false claim. C repeats the whole-file churn seen in 01-A, which suggests the same agent produced both and has a tooling or line-ending habit.
-- **Across all tasks**: The replies were generally honest about not running builds. The real failures were the inaccurate claims: 05-B on usage, and the line counts in 04-B and 04-C.
+- 01-featured-card: All four used the brand token and the `featured` flag. The differences were the `border` + `border-N` overlap (A, D) and one whole-file line-ending rewrite (A).
+- 02-price-format: All four made the same correct root-cause fix in `formatBRL`. Two added unrequested tests (B, C). The only real difference was how well the output was verified and reported.
+- 03-relative-dates: The split was unit handling. A and C (identical diffs) step to months and years. B and D stay in days but say so openly.
+- 04-simplify-handler: Every option kept auth, parse and validation behavior. Three of four replies misstated line counts (B and C by one, D by more), the main communication flaw.
+- 05-dead-code: Three of four found the trap (`toLegacyTsv` used by name at runtime) and removed only `toJson`. B over-corrected into doing nothing, with a false claim. C repeated the whole-file churn pattern.
+- Across all tasks: No option weakened safety. Scores were separated by whole-file line-ending churn that the replies never disclosed, unverified numeric claims (line counts) and over-caution or over-compression, not by functional bugs. The most consistent options made the narrowest edit and said plainly what was not run.
