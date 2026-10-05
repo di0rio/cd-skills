@@ -1,10 +1,12 @@
 # Benchmark results
 
+> These results were measured with the previous version of the skill, `pragmatic-code` (the file was at `skills/pragmatic-code/SKILL.md`, see git history). They have not been re-run for `clean-code-ai`.
+
 Five small tasks, each run three times with the same model (Claude Sonnet) in an isolated copy of the fixture:
 
 - **baseline**: no rules
 - **ponytail**: [ponytail](https://ponytail.dev/) SKILL.md, default intensity
-- **pragmatic**: `skills/pragmatic-code/SKILL.md`
+- **pragmatic**: `skills/pragmatic-code/SKILL.md` (previous version, see the note above)
 
 A separate judge (Claude Opus) scored the 15 attempts blind: the three attempts of each task were shuffled into options A/B/C, and identifying comments were removed. The full verdict, with justifications, is in [`VERDICT.md`](VERDICT.md); the letter mapping is below. Raw outputs are in [`runs/`](runs/), anonymized inputs to the judge in [`judge/`](judge/).
 
