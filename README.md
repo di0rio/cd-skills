@@ -39,19 +39,19 @@ Claude Code, as a personal skill:
 
 ```bash
 mkdir -p ~/.claude/skills/clean-code-ai
-curl -fsSL https://raw.githubusercontent.com/di0rio/pragmatic-code/main/skills/clean-code-ai/SKILL.md -o ~/.claude/skills/clean-code-ai/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/di0rio/clean-code-ai/main/skills/clean-code-ai/SKILL.md -o ~/.claude/skills/clean-code-ai/SKILL.md
 ```
 
 Portuguese version, same folder and file name:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/di0rio/pragmatic-code/main/skills/clean-code-ai/SKILL.pt.md -o ~/.claude/skills/clean-code-ai/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/di0rio/clean-code-ai/main/skills/clean-code-ai/SKILL.pt.md -o ~/.claude/skills/clean-code-ai/SKILL.md
 ```
 
 With the [skills CLI](https://skills.sh):
 
 ```bash
-npx skills add di0rio/pragmatic-code
+npx skills add di0rio/clean-code-ai
 ```
 
 Any other agent: paste the body of `SKILL.md` into your rules file (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules`).
