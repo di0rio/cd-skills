@@ -5,7 +5,7 @@ Skills I wrote for AI coding agents (Claude Code, Codex, Cursor and others). Eac
 | Skill | What it does |
 | --- | --- |
 | [clean-code-ai](skills/clean-code-ai/) | Asks for the smallest correct, safe and readable change that fits the project, with security, correctness and contracts above "do less". Tested on a small blind benchmark ([`bench/clean-code-ai/`](bench/clean-code-ai/)). |
-| [portfolio-demo](skills/portfolio-demo/) | Turns "record a demo of this project" into a short product video: the agent picks the flow, rehearses it and writes the shot list; you record and edit; the agent checks the export. |
+| [portfolio-demo](skills/portfolio-demo/) | Turns "record a demo of this project" into a short product video: the agent picks one flow, rehearses it, writes the shot list, captures it by script (or hands it to you to record in Recordly) and reviews the export frame by frame. |
 
 ## Install
 
