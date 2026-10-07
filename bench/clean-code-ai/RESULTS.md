@@ -5,7 +5,7 @@ Five small tasks, each run four times with the same model (Claude Sonnet) in an 
 - **baseline**: no rules
 - **ponytail**: [ponytail](https://ponytail.dev/) SKILL.md, default intensity
 - **pragmatic**: `pragmatic-code`, the previous version of this skill (it lived at `skills/pragmatic-code/SKILL.md`, see git history)
-- **clean-code-ai**: [`skills/clean-code-ai/SKILL.md`](../skills/clean-code-ai/SKILL.md), default level (full)
+- **clean-code-ai**: [`skills/clean-code-ai/SKILL.md`](../../skills/clean-code-ai/SKILL.md), default level (full)
 
 The baseline, ponytail and pragmatic runs are from 2026-10-04; the clean-code-ai runs are from 2026-10-05. On 2026-10-05 a separate judge (Claude Opus) re-scored all 20 attempts blind, together: the four attempts of each task were shuffled into options A/B/C/D, and identifying comments were removed. The full verdict, with justifications, is in [`VERDICT.md`](VERDICT.md); the letter mapping is below. Raw outputs are in [`runs/`](runs/), anonymized inputs to the judge in [`judge/`](judge/). The first 3-arm verdict is in git history.
 
