@@ -173,17 +173,23 @@ export default async function Home() {
 
 			<Section id="instalar" label={install.label} n={3} title={install.title}>
 				<Tabs data-reveal defaultValue="cli">
-					<TabsList
-						aria-label={install.tabs}
-						className="max-w-full overflow-x-auto"
-					>
-						<TabsTab className="shrink-0" value="cli">
+					<TabsList aria-label={install.tabs} className="w-full sm:w-fit">
+						<TabsTab
+							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
+							value="cli"
+						>
 							{install.cli}
 						</TabsTab>
-						<TabsTab className="shrink-0" value="claude">
+						<TabsTab
+							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
+							value="claude"
+						>
 							{install.claude}
 						</TabsTab>
-						<TabsTab className="shrink-0" value="others">
+						<TabsTab
+							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
+							value="others"
+						>
 							{install.others}
 						</TabsTab>
 					</TabsList>

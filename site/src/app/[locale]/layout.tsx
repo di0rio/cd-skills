@@ -76,7 +76,11 @@ export default async function RootLayout({
 						>
 							{shell.skip}
 						</a>
-						<MotionToggle labels={shell.motion} />
+						{/* O conteúdo se dissolve antes de chegar no pill do topo, em vez de passar por baixo dele. */}
+						<div
+							aria-hidden="true"
+							className="pointer-events-none fixed inset-x-0 top-0 z-30 h-24 bg-linear-to-b from-background from-35% to-transparent"
+						/>
 						<header className="sticky top-3 z-40 px-3 pt-3">
 							<div className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border bg-background/75 py-1.5 pr-1.5 pl-4 backdrop-blur-md sm:gap-2">
 								<SitePrompt label={shell.nav.home} locale={locale} />
@@ -95,7 +99,7 @@ export default async function RootLayout({
 												</Link>
 											</li>
 										))}
-										<li>
+										<li className="max-[400px]:hidden">
 											<a
 												className={cn(navLink, "text-foreground")}
 												href={site.github}
@@ -109,6 +113,7 @@ export default async function RootLayout({
 								</nav>
 								<LocaleSwitch label={shell.language.label} locale={locale} />
 								<ThemeSwitch labels={shell.theme} />
+								<MotionToggle labels={shell.motion} />
 							</div>
 						</header>
 

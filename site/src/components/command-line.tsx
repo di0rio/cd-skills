@@ -15,17 +15,17 @@ export function CommandLine({
 	return (
 		<div
 			className={cn(
-				"flex items-center gap-2 rounded-xl border bg-card py-1 pr-1 pl-4",
+				"flex items-start gap-2 rounded-xl border bg-card py-1 pr-1 pl-4 sm:items-center",
 				large && "pl-5 sm:py-3 sm:pr-3 sm:pl-6",
 			)}
 		>
 			<pre
 				className={cn(
-					"min-w-0 flex-1 overflow-x-auto py-1.5 font-mono text-sm leading-relaxed",
+					"min-w-0 flex-1 whitespace-pre-wrap py-1.5 font-mono text-sm leading-relaxed [overflow-wrap:anywhere] sm:overflow-x-auto sm:whitespace-pre sm:[overflow-wrap:normal]",
 					large && "text-[15px] sm:text-xl",
 				)}
 			>
-				<code className="block w-max min-w-full">
+				<code className="block sm:w-max sm:min-w-full">
 					<span aria-hidden="true" className="select-none">
 						<span className="text-brand-foreground">~</span>{" "}
 						<span className="text-muted-foreground">$</span>{" "}

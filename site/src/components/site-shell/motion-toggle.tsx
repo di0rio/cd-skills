@@ -2,9 +2,11 @@
 
 import { PauseIcon, PlayIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "@/components/ui/tooltip";
 import { applyPause, storedPause, storePause } from "@/lib/motion";
 
-/** Botão fixo "pausar movimento": vale pro site todo, fica salvo no navegador e soma com o `prefers-reduced-motion`. */
+/** "Pausar movimento" no pill do topo: vale pro site todo, fica salvo no navegador e soma com o `prefers-reduced-motion`. */
 export function MotionToggle({
 	labels,
 }: {
@@ -20,20 +22,23 @@ export function MotionToggle({
 	}, []);
 
 	const Icon = paused ? PlayIcon : PauseIcon;
+	const label = paused ? labels.play : labels.pause;
 
 	return (
-		<button
-			aria-pressed={paused}
-			className="fixed right-4 bottom-4 z-40 flex items-center gap-2 rounded-full border bg-background/80 py-2 pr-4 pl-3 font-mono text-muted-foreground text-xs outline-none backdrop-blur-md transition-[color,transform] duration-150 ease-out hover:text-foreground focus-visible:ring-2 focus-visible:ring-brand motion-safe:active:scale-[0.97]"
-			onClick={() => {
-				setPaused(!paused);
-				applyPause(!paused);
-				storePause(!paused);
-			}}
-			type="button"
-		>
-			<Icon aria-hidden="true" className="size-3.5" />
-			{paused ? labels.play : labels.pause}
-		</button>
+		<Tooltip>
+			<TooltipTrigger
+				aria-label={label}
+				aria-pressed={paused}
+				onClick={() => {
+					setPaused(!paused);
+					applyPause(!paused);
+					storePause(!paused);
+				}}
+				render={<Button size="icon-sm" type="button" variant="outline" />}
+			>
+				<Icon aria-hidden="true" />
+			</TooltipTrigger>
+			<TooltipPopup>{label}</TooltipPopup>
+		</Tooltip>
 	);
 }
