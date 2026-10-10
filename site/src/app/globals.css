@@ -617,3 +617,111 @@ body {
 .tabs-scroll[data-fade-r] {
 	--fade-r: 28px;
 }
+
+/* Dock e ícone da mesa: aparecem quando a janela está minimizada ou fechada. O dock é um material translúcido. */
+.dock {
+	position: fixed;
+	z-index: 20;
+	left: 50%;
+	bottom: 12px;
+	translate: -50% 0;
+	display: flex;
+	padding: 8px;
+	border-radius: 22px;
+	border: 1px solid var(--border);
+	background: --alpha(var(--background) / 55%);
+	backdrop-filter: blur(24px) saturate(1.6);
+	box-shadow: var(--win-shadow);
+	opacity: 0;
+	scale: 0.9;
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity 250ms var(--cd-ease-out),
+		scale 250ms var(--cd-ease-out),
+		visibility 0s 250ms;
+}
+.dock[data-show] {
+	opacity: 1;
+	scale: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+.dock-icon {
+	display: block;
+	border-radius: 14px;
+	outline: none;
+	transition: transform 160ms var(--cd-ease-out);
+}
+.dock-icon:focus-visible,
+.desktop-icon:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 3px;
+}
+.dock-icon:active,
+.desktop-icon:active {
+	transform: scale(0.96);
+}
+@media (hover: hover) and (pointer: fine) {
+	.dock-icon:hover {
+		transform: translateY(-6px) scale(1.1);
+	}
+}
+.dock-hint {
+	position: fixed;
+	z-index: 20;
+	left: 50%;
+	bottom: 96px;
+	translate: -50% 0;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--muted-foreground);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 250ms ease 200ms;
+}
+.dock-hint[data-show] {
+	opacity: 1;
+}
+.desktop-icon {
+	position: fixed;
+	z-index: 5;
+	top: 24px;
+	right: 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	padding: 6px;
+	border-radius: 14px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: var(--foreground);
+	opacity: 0;
+	scale: 0.92;
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity 250ms var(--cd-ease-out),
+		scale 250ms var(--cd-ease-out),
+		visibility 0s 250ms;
+}
+.desktop-icon[data-show] {
+	opacity: 1;
+	scale: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+.win[data-parked] {
+	visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+	.dock,
+	.desktop-icon,
+	.dock-hint {
+		transition: opacity 150ms ease;
+		scale: 1;
+	}
+}

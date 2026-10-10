@@ -94,6 +94,13 @@ export default async function RootLayout({
 								forward: shell.window.forward,
 								address: shell.window.address,
 								copied: shell.copy.done,
+								close: shell.window.close,
+								minimize: shell.window.minimize,
+								zoom: shell.window.zoom,
+								unzoom: shell.window.unzoom,
+								open: shell.window.open,
+								desktop: shell.window.desktop,
+								hint: shell.window.hint,
 							}}
 							tabs={tabs}
 						>

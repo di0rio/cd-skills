@@ -339,7 +339,12 @@ export function GlyphArt({ pool }: { pool: string }) {
 			});
 		};
 
-		const resize = new ResizeObserver(() => schedule(false));
+		// Durante o zoom da janela o tamanho muda a cada quadro: só reconstrói quando assentar.
+		let settle = 0;
+		const resize = new ResizeObserver(() => {
+			clearTimeout(settle);
+			settle = window.setTimeout(() => schedule(false), 140);
+		});
 		resize.observe(el);
 		const view = new IntersectionObserver(([entry]) => {
 			visible = entry.isIntersecting;
@@ -359,6 +364,7 @@ export function GlyphArt({ pool }: { pool: string }) {
 			cancelled = true;
 			stop();
 			cancelAnimationFrame(pending);
+			clearTimeout(settle);
 			if (typeof cancelIdleCallback === "function") cancelIdleCallback(idle);
 			else clearTimeout(idle);
 			resize.disconnect();
