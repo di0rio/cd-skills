@@ -47,7 +47,7 @@ const link =
 	"rounded-sm underline decoration-muted-foreground/40 underline-offset-4 outline-none transition-[text-decoration-color] duration-150 hover:decoration-brand focus-visible:ring-2 focus-visible:ring-brand";
 
 type Block = {
-	id: string;
+	id: "idea" | "list" | "stats" | "modes";
 	title: string;
 	intro?: string;
 	body: ReactNode;
@@ -88,18 +88,18 @@ export default async function SkillPage({
 	// Seções numeradas na ordem da página; o README é sempre a última.
 	const blocks: Block[] = [
 		landing?.idea && {
-			id: "idea",
+			id: "idea" as const,
 			title: pick(landing.idea.title, locale),
 			body: <IdeaBlock idea={landing.idea} labels={labels} locale={locale} />,
 		},
 		landing?.list && {
-			id: "list",
+			id: "list" as const,
 			title: pick(landing.list.title, locale),
 			intro: landing.list.intro && pick(landing.list.intro, locale),
 			body: <Ladder items={landing.list.items} locale={locale} />,
 		},
 		landing?.stats && {
-			id: "stats",
+			id: "stats" as const,
 			title: pick(landing.stats.title, locale),
 			body: (
 				<>
@@ -126,7 +126,7 @@ export default async function SkillPage({
 			),
 		},
 		landing?.modes && {
-			id: "modes",
+			id: "modes" as const,
 			title: pick(landing.modes.title, locale),
 			intro: landing.modes.intro && pick(landing.modes.intro, locale),
 			body: <Modes items={landing.modes.items} locale={locale} />,
@@ -237,7 +237,7 @@ export default async function SkillPage({
 					id={block.id}
 					intro={block.intro && <Rich text={block.intro} />}
 					key={block.id}
-					label={block.id}
+					label={copy.sections[block.id]}
 					n={i + 1}
 					title={block.title}
 				>
@@ -247,7 +247,7 @@ export default async function SkillPage({
 
 			<Section
 				id="readme"
-				label="readme"
+				label={copy.sections.readme}
 				n={blocks.length + 1}
 				title={copy.readme}
 			>

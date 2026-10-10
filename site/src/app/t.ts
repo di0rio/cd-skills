@@ -85,6 +85,14 @@ export default {
 		github: { pt: "ver no github", en: "view on github" },
 		post: { pt: "ler o post", en: "read the post" },
 		readme: { pt: "leia o README", en: "read the README" },
+		// Rótulo pequeno em cima de cada seção numerada.
+		sections: {
+			idea: { pt: "ideia", en: "idea" },
+			list: { pt: "lista", en: "list" },
+			stats: { pt: "números", en: "numbers" },
+			modes: { pt: "modos", en: "modes" },
+			readme: { pt: "readme", en: "readme" },
+		},
 		onlyEnglish: {
 			pt: "Esse texto só existe em inglês por enquanto.",
 			en: "This text is only available in English.",

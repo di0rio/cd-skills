@@ -59,6 +59,13 @@ export const translations = {
 				github: "ver no github",
 				post: "ler o post",
 				readme: "leia o README",
+				sections: {
+					idea: "ideia",
+					list: "lista",
+					stats: "números",
+					modes: "modos",
+					readme: "readme",
+				},
 				onlyEnglish: "Esse texto só existe em inglês por enquanto.",
 			},
 			notFound: {
@@ -171,6 +178,13 @@ export const translations = {
 				github: "view on github",
 				post: "read the post",
 				readme: "read the README",
+				sections: {
+					idea: "idea",
+					list: "list",
+					stats: "numbers",
+					modes: "modes",
+					readme: "readme",
+				},
 				onlyEnglish: "This text is only available in English.",
 			},
 			notFound: {
