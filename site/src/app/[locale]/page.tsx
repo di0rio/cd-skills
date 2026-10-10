@@ -49,7 +49,7 @@ export default async function Home() {
 
 	return (
 		<>
-			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[min(calc(100svh-6rem),48rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
+			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[min(calc(100dvh-14rem),44rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
 				<div>
 					<p className="enter font-mono text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
 						{hero.eyebrow({ count: String(skills.length) })}

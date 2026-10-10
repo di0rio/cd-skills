@@ -46,6 +46,9 @@
 	--color-card: var(--card);
 	--color-foreground: var(--foreground);
 	--color-background: var(--background);
+	--color-desktop: var(--desktop);
+	--color-chrome-bar: var(--chrome-bar);
+	--color-chrome: var(--chrome);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
 	@keyframes caret {
@@ -92,6 +95,13 @@
 	--cd-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 	--cd-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 	--cd-scale-enter: 0.96;
+	/* Janela: a mesa (fundo), a barra de abas, a barra de ferramentas (a aba ativa tem a mesma cor) e as sombras. */
+	--desktop: #d9d5c8;
+	--chrome-bar: #e3e0d4;
+	--chrome: #f1eee5;
+	--win-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 0.18), 0 1.5px 3px rgb(0 0 0 / 0.14),
+		0 14px 30px rgb(0 0 0 / 0.16), 0 36px 80px rgb(0 0 0 / 0.2);
 }
 
 .dark {
@@ -112,6 +122,12 @@
 	--destructive-foreground: #f87171;
 	--brand-foreground: #ffd23f;
 	--success-foreground: #4ade80;
+	--desktop: #0c0c0c;
+	--chrome-bar: #131313;
+	--chrome: #242422;
+	--win-shadow:
+		0 0 0 0.5px rgb(255 255 255 / 0.14), 0 1.5px 3px rgb(0 0 0 / 0.5),
+		0 16px 34px rgb(0 0 0 / 0.5), 0 40px 90px rgb(0 0 0 / 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -173,7 +189,7 @@
 		caret-color: var(--brand-foreground);
 		scrollbar-color: --alpha(var(--muted-foreground) / 35%) transparent;
 		/* Espaço da barra de rolagem sempre reservado: página curta e longa têm a mesma largura (nada pula). */
-		scrollbar-gutter: stable;
+		overflow: hidden;
 		/* O fundo no <html> evita o quadro branco entre um documento e outro (ex.: troca pt/en). */
 		background: var(--background);
 	}
@@ -492,4 +508,112 @@ html[data-motion-paused] .glyph-shine {
 	.glyph-shine {
 		display: none;
 	}
+}
+
+/* ---- Janela ----
+   O site inteiro vive numa janela no estilo do macOS, sobre uma "mesa". A página não rola: quem rola é o corpo da janela
+   (`.win-body`), então âncoras, observers e timelines view() usam ele como scroller. Até 767px a janela é sempre
+   maximizada. A geometria vem de variáveis pra o zoom poder animar entre as duas. */
+html,
+body {
+	height: 100%;
+	overflow: hidden;
+}
+body {
+	background: var(--desktop);
+}
+.wallpaper {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+	background:
+		radial-gradient(
+			70% 55% at 50% 0%,
+			--alpha(var(--brand) / 7%),
+			transparent 70%
+		),
+		var(--desktop);
+}
+.wallpaper::after {
+	content: "cd/";
+	position: absolute;
+	right: -4vw;
+	bottom: -14vw;
+	font-family: var(--font-mono);
+	font-weight: 700;
+	font-size: 46vw;
+	line-height: 1;
+	letter-spacing: -0.06em;
+	color: var(--foreground);
+	opacity: 0.025;
+}
+.win {
+	--win-w: min(1180px, 100vw - 64px);
+	--win-l: calc((100vw - var(--win-w)) / 2);
+	--win-t: 32px;
+	--win-h: calc(100dvh - 64px);
+	--win-r: 12px;
+	position: fixed;
+	z-index: 10;
+	left: var(--win-l);
+	top: var(--win-t);
+	width: var(--win-w);
+	height: var(--win-h);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border-radius: var(--win-r);
+	background: var(--background);
+	box-shadow: var(--win-shadow);
+	transition: box-shadow 300ms var(--cd-ease-out);
+}
+.win[data-max] {
+	--win-w: 100vw;
+	--win-l: 0px;
+	--win-t: 0px;
+	--win-h: 100dvh;
+	--win-r: 0px;
+	box-shadow: 0 0 0 0 transparent;
+}
+@media (max-width: 767px) {
+	.win {
+		--win-w: 100vw;
+		--win-l: 0px;
+		--win-t: 0px;
+		--win-h: 100dvh;
+		--win-r: 0px;
+		box-shadow: none;
+	}
+}
+.win-body {
+	flex: 1;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scroll-padding-top: 1rem;
+}
+/* Abas com borda esmaecida quando tem mais pra rolar. */
+.tabs-scroll {
+	overflow-x: auto;
+	scrollbar-width: none;
+	--fade-l: 0px;
+	--fade-r: 0px;
+	mask-image: linear-gradient(
+		90deg,
+		transparent,
+		#000 var(--fade-l),
+		#000 calc(100% - var(--fade-r)),
+		transparent
+	);
+}
+.tabs-scroll::-webkit-scrollbar {
+	display: none;
+}
+.tabs-scroll[data-fade-l] {
+	--fade-l: 28px;
+}
+.tabs-scroll[data-fade-r] {
+	--fade-r: 28px;
 }

@@ -3,11 +3,17 @@ export default {
 	nav: {
 		label: { pt: "Links", en: "Links" },
 		home: { pt: "início", en: "home" },
-		skills: { pt: "skills", en: "skills" },
-		how: { pt: "como funciona", en: "how it works" },
-		install: { pt: "instalar", en: "install" },
 		github: { pt: "github", en: "github" },
 		portfolio: { pt: "portfólio", en: "portfolio" },
+	},
+	window: {
+		tabs: { pt: "Páginas", en: "Pages" },
+		back: { pt: "Voltar", en: "Back" },
+		forward: { pt: "Avançar", en: "Forward" },
+		address: {
+			pt: "Copiar o endereço da página",
+			en: "Copy the page address",
+		},
 	},
 	theme: {
 		toLight: { pt: "Mudar pro tema claro", en: "Switch to light theme" },

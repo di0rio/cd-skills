@@ -75,11 +75,14 @@ export const translations = {
 				nav: {
 					label: "Links",
 					home: "início",
-					skills: "skills",
-					how: "como funciona",
-					install: "instalar",
 					github: "github",
 					portfolio: "portfólio",
+				},
+				window: {
+					tabs: "Páginas",
+					back: "Voltar",
+					forward: "Avançar",
+					address: "Copiar o endereço da página",
 				},
 				theme: {
 					toLight: "Mudar pro tema claro",
@@ -177,11 +180,14 @@ export const translations = {
 				nav: {
 					label: "Links",
 					home: "home",
-					skills: "skills",
-					how: "how it works",
-					install: "install",
 					github: "github",
 					portfolio: "portfolio",
+				},
+				window: {
+					tabs: "Pages",
+					back: "Back",
+					forward: "Forward",
+					address: "Copy the page address",
 				},
 				theme: {
 					toLight: "Switch to light theme",

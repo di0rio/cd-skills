@@ -25,7 +25,7 @@ export function Section({
 	return (
 		<section
 			aria-labelledby={`${id}-title`}
-			className="scroll-mt-20 pt-20 sm:pt-32"
+			className="scroll-mt-4 pt-20 sm:pt-32"
 			id={id}
 		>
 			<div className="wrap">
