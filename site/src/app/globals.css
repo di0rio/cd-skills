@@ -1,0 +1,357 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--color-brand: var(--brand);
+	--color-brand-foreground: var(--brand-foreground);
+	--color-brand-contrast: var(--brand-contrast);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+	--radius-xs: 4px;
+	--radius-sm: calc(var(--radius) * 0.5);
+	--radius-md: calc(var(--radius) * 0.75);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) * 1.5);
+	--radius-2xl: calc(var(--radius) * 2);
+	--ease-out: var(--cd-ease-out);
+	--ease-in-out: var(--cd-ease-in-out);
+	--transition-duration-instant: var(--cd-duration-instant);
+	--transition-duration-fast: var(--cd-duration-fast);
+	--transition-duration-base: var(--cd-duration-base);
+	--transition-duration-slow: var(--cd-duration-slow);
+	--cd-scale-enter: var(--cd-scale-enter);
+	--cd-ease-in-out: var(--cd-ease-in-out);
+	--cd-ease-out: var(--cd-ease-out);
+	--cd-duration-slow: var(--cd-duration-slow);
+	--cd-duration-base: var(--cd-duration-base);
+	--cd-duration-fast: var(--cd-duration-fast);
+	--cd-duration-instant: var(--cd-duration-instant);
+	--radius-field: var(--radius-field);
+	--radius-button: var(--radius-button);
+	--color-destructive: var(--destructive);
+	--color-ring: var(--ring);
+	--color-input: var(--input);
+	--color-border: var(--border);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent: var(--accent);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-muted: var(--muted);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-popover: var(--popover);
+	--color-card-foreground: var(--card-foreground);
+	--color-card: var(--card);
+	--color-foreground: var(--foreground);
+	--color-background: var(--background);
+	--radius-3xl: calc(var(--radius) * 2.2);
+	--radius-4xl: calc(var(--radius) * 2.6);
+	@keyframes caret {
+		0%,
+		70%,
+		100% {
+			opacity: 1;
+		}
+		20%,
+		50% {
+			opacity: 0;
+		}
+	}
+}
+
+:root {
+	--background: #f6f4ee;
+	--foreground: #262626;
+	--card: #fbfaf6;
+	--card-foreground: #262626;
+	--popover: #fbfaf6;
+	--popover-foreground: #262626;
+	--muted: rgb(0 0 0 / 0.04);
+	--muted-foreground: #686868;
+	--accent: rgb(0 0 0 / 0.04);
+	--accent-foreground: #262626;
+	--border: rgb(0 0 0 / 0.08);
+	--input: rgb(0 0 0 / 0.12);
+	--ring: #e0b320;
+	--destructive: #dc2626;
+	--destructive-foreground: #b91c1c;
+	--brand: #ffd23f;
+	--brand-foreground: #7a5c00;
+	--brand-contrast: #1c1c1c;
+	--success: #16a34a;
+	--success-foreground: #15803d;
+	--radius: 0.75rem;
+	--radius-button: var(--radius);
+	--radius-field: var(--radius);
+	--cd-duration-instant: 80ms;
+	--cd-duration-fast: 120ms;
+	--cd-duration-base: 160ms;
+	--cd-duration-slow: 240ms;
+	--cd-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--cd-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+	--cd-scale-enter: 0.96;
+}
+
+.dark {
+	--background: #1c1c1c;
+	--foreground: #f5f5f5;
+	--card: #222220;
+	--card-foreground: #f5f5f5;
+	--popover: #222220;
+	--popover-foreground: #f5f5f5;
+	--muted: rgb(255 255 255 / 0.04);
+	--muted-foreground: #8a8a8a;
+	--accent: rgb(255 255 255 / 0.06);
+	--accent-foreground: #f5f5f5;
+	--border: rgb(255 255 255 / 0.08);
+	--input: rgb(255 255 255 / 0.12);
+	--ring: #ffd23f;
+	--destructive: #dc2626;
+	--destructive-foreground: #f87171;
+	--brand-foreground: #ffd23f;
+	--success-foreground: #4ade80;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--cd-duration-instant: 0.01ms;
+		--cd-duration-fast: 0.01ms;
+		--cd-duration-base: 0.01ms;
+		--cd-duration-slow: 0.01ms;
+		--cd-scale-enter: 1;
+	}
+}
+
+@utility cd-popup {
+	transform-origin: var(--transform-origin);
+	transition-property: opacity, transform;
+	transition-duration: var(--cd-duration-base);
+	transition-timing-function: var(--cd-ease-out);
+	&[data-starting-style],
+	&[data-ending-style] {
+		opacity: 0;
+		transform: scale(var(--cd-scale-enter));
+	}
+	&[data-ending-style] {
+		transition-duration: var(--cd-duration-fast);
+	}
+	&[data-instant] {
+		transition-duration: 0ms;
+	}
+}
+
+@utility animate-caret {
+	animation: caret 1s ease-out infinite;
+}
+
+/* Hover só onde existe hover de verdade (mouse/trackpad): no toque o :hover "gruda" depois do tap. */
+@custom-variant hover-hover {
+	@media (hover: hover) {
+		&:hover {
+			@slot;
+		}
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+	code,
+	kbd,
+	samp,
+	pre {
+		font-family: var(--font-mono);
+	}
+	html {
+		@apply font-sans;
+		caret-color: var(--brand-foreground);
+		scrollbar-color: --alpha(var(--muted-foreground) / 35%) transparent;
+		/* Espaço da barra de rolagem sempre reservado: página curta e longa têm a mesma largura (nada pula). */
+		scrollbar-gutter: stable;
+		/* O fundo no <html> evita o quadro branco entre um documento e outro (ex.: troca pt/en). */
+		background: var(--background);
+	}
+	h1,
+	h2,
+	h3,
+	h4 {
+		text-wrap: balance;
+	}
+	p {
+		text-wrap: pretty;
+	}
+	::selection {
+		background: --alpha(var(--brand) / 45%);
+		color: var(--foreground);
+	}
+	/* Tailwind v4 tirou o pointer dos botões; tudo que é clicável volta a ter. */
+	button:not(:disabled),
+	[role="button"]:not([aria-disabled="true"]),
+	[role="tab"],
+	summary,
+	label[for] {
+		cursor: pointer;
+	}
+}
+
+/* Markdown: README da skill */
+@layer components {
+	.markdown {
+		@apply text-[16px] leading-7 text-foreground [overflow-wrap:break-word];
+	}
+	.markdown > * + * {
+		@apply mt-4;
+	}
+	.markdown h2,
+	.markdown h3 {
+		@apply relative mt-10 scroll-mt-8 text-balance font-bold leading-tight;
+	}
+	.markdown p,
+	.markdown li {
+		@apply text-pretty;
+	}
+	/* "#" ao lado do título: link direto pra seção. */
+	.markdown .anchor {
+		@apply absolute right-full pr-2 font-normal text-muted-foreground no-underline opacity-0 transition-opacity duration-150;
+	}
+	.markdown .anchor:focus-visible {
+		@apply rounded-sm opacity-100 outline-none ring-2 ring-brand;
+	}
+	@media (hover: hover) and (pointer: fine) {
+		.markdown :is(h2, h3):hover .anchor {
+			@apply opacity-100;
+		}
+	}
+	.markdown h2 {
+		@apply mt-14 text-xl;
+	}
+	.markdown :is(h2, h3) + :is(h2, h3) {
+		@apply mt-4;
+	}
+	.markdown h3 {
+		@apply text-lg;
+	}
+	.markdown a {
+		@apply text-brand-foreground underline underline-offset-3;
+	}
+	.markdown ul {
+		@apply list-disc pl-5;
+	}
+	.markdown ol {
+		@apply list-decimal pl-5;
+	}
+	.markdown li + li {
+		@apply mt-1;
+	}
+	.markdown blockquote {
+		@apply border-l pl-4 text-muted-foreground italic;
+	}
+	.markdown :not(pre) > code {
+		@apply box-decoration-clone rounded-md bg-accent px-1 py-0.5 text-[0.9em] leading-none;
+	}
+	.markdown pre {
+		@apply overflow-x-auto rounded-xl border bg-card p-4 text-sm leading-6;
+	}
+	/* Bloco de código: barra com a linguagem e o botão de copiar; a rolagem horizontal fica no <pre>. */
+	.markdown .code {
+		@apply overflow-hidden rounded-xl border bg-card;
+	}
+	.markdown .code pre {
+		@apply rounded-none border-0 bg-transparent;
+	}
+	.markdown .code-bar {
+		@apply flex items-center justify-between gap-2 border-b py-1 pr-1 pl-4 font-mono text-muted-foreground text-xs;
+	}
+	.markdown table {
+		@apply block w-full overflow-x-auto text-sm tabular-nums;
+	}
+	/* Tabela como texto: só linhas horizontais, cabeçalho discreto. */
+	.markdown th,
+	.markdown td {
+		@apply border-b px-3 py-1.5 text-left;
+	}
+	.markdown :is(th, td):first-child {
+		@apply pl-0;
+	}
+	.markdown th {
+		@apply font-medium text-muted-foreground;
+	}
+	.markdown hr {
+		@apply my-8 border-border;
+	}
+}
+
+/* Troca de idioma muda o segmento raiz e o Next recarrega a página: a transição entre documentos
+   segura a página antiga na tela até a nova pintar, em vez de piscar em branco. */
+@view-transition {
+	navigation: auto;
+}
+
+/* Troca de idioma: enquanto o servidor re-renderiza, o conteúdo esmaece de leve em vez de trocar seco. */
+main {
+	transition: opacity 150ms ease;
+}
+html[data-pending] main {
+	opacity: 0.6;
+}
+
+/* Navegar entre páginas: a página em si não faz crossfade, só o <main> (120ms, sem deslocar nem atrasar). */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+}
+::view-transition-group(.page) {
+	animation: none;
+}
+::view-transition-old(.page) {
+	animation: vt-out 120ms ease-out both;
+}
+::view-transition-new(.page) {
+	animation: vt-fade 120ms ease-out both;
+}
+@keyframes vt-out {
+	to {
+		opacity: 0;
+	}
+}
+@keyframes vt-fade {
+	from {
+		opacity: 0;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-new(.page) {
+		animation: vt-fade 160ms ease both;
+	}
+}
+
+/* Entrada escalonada da lista: o atraso vem de --i, em passos de 40ms. Só opacidade e 4px pra cima, como
+   transição com @starting-style (não animação com `fill: both`): o estado normal do item é visível, então se
+   a entrada não rodar (troca de página interrompida, aba em segundo plano) ele aparece mesmo assim. */
+@utility rise {
+	transition:
+		opacity 250ms var(--cd-ease-out) calc(var(--i, 0) * 40ms),
+		translate 250ms var(--cd-ease-out) calc(var(--i, 0) * 40ms);
+	@starting-style {
+		opacity: 0;
+		translate: 0 4px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		transition: opacity 150ms ease;
+		@starting-style {
+			translate: 0 0;
+		}
+	}
+}
+
+@layer components {
+	.markdown img {
+		@apply max-w-full rounded-lg border;
+	}
+}
