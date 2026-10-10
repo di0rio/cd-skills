@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { CodeCopy } from "@/components/code-copy";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +22,7 @@ export function CommandLine({
 		>
 			<pre
 				className={cn(
-					"min-w-0 flex-1 whitespace-pre-wrap py-1.5 font-mono text-sm leading-relaxed [overflow-wrap:anywhere] sm:overflow-x-auto sm:whitespace-pre sm:[overflow-wrap:normal]",
+					"min-w-0 flex-1 whitespace-pre-wrap py-1.5 font-mono text-sm leading-relaxed [overflow-wrap:break-word] sm:overflow-x-auto sm:whitespace-pre sm:[overflow-wrap:normal]",
 					large && "text-[15px] sm:text-xl",
 				)}
 			>
@@ -30,7 +31,13 @@ export function CommandLine({
 						<span className="text-brand-foreground">~</span>{" "}
 						<span className="text-muted-foreground">$</span>{" "}
 					</span>
-					{command}
+					{/* No celular quebra entre palavras, nunca no hífen de "cd-skills". */}
+					{command.split(" ").map((word, i) => (
+						<Fragment key={word}>
+							{i > 0 && " "}
+							<span className="whitespace-nowrap">{word}</span>
+						</Fragment>
+					))}
 				</code>
 			</pre>
 			<CodeCopy done={copy.done} label={copy.label} text={command} />
