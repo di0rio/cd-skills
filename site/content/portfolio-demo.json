@@ -1,0 +1,82 @@
+{
+	"tagline": {
+		"pt": "vídeo de demo curto, com um fluxo só, que termina no resultado.",
+		"en": "short demo videos that follow one flow and end on the result."
+	},
+	"headline": {
+		"pt": "um fluxo, 45 segundos, o resultado no fim.",
+		"en": "one flow, 45 seconds, the result at the end."
+	},
+	"idea": {
+		"title": { "pt": "a ideia", "en": "the idea" },
+		"kind": "beforeAfter",
+		"before": {
+			"pt": "72s, Button, Zod, Dialog e Table sem nada ligando um no outro",
+			"en": "72s, Button, Zod, Dialog and Table with nothing tying them together"
+		},
+		"after": {
+			"pt": "45s, um fluxo: busca → componente → bloco",
+			"en": "45s, one flow: search → component → block"
+		},
+		"caption": {
+			"pt": "O vídeo do cd/ui antes e depois da skill. O antigo pulava de componente em componente sem explicar nenhum. O novo vai do Ctrl K até o bloco pronto e para ali.",
+			"en": "The cd/ui video before and after the skill. The old one jumped from component to component without explaining any of them. The new one goes from Ctrl K to a finished block and stops there."
+		}
+	},
+	"list": {
+		"title": { "pt": "o fluxo", "en": "the workflow" },
+		"items": [
+			{ "pt": "descobrir", "en": "discover" },
+			{ "pt": "escolher um fluxo", "en": "pick a flow" },
+			{ "pt": "preparar", "en": "prepare" },
+			{ "pt": "ensaiar no Playwright", "en": "rehearse in Playwright" },
+			{ "pt": "roteiro de takes", "en": "shot list" },
+			{ "pt": "capturar", "en": "capture" },
+			{ "pt": "revisar e integrar", "en": "review and integrate" }
+		]
+	},
+	"stats": {
+		"title": { "pt": "em números", "en": "in numbers" },
+		"items": [
+			{
+				"value": "3",
+				"label": {
+					"pt": "vídeos no portfólio",
+					"en": "videos in the portfolio"
+				}
+			},
+			{ "value": "28-45s", "label": { "pt": "de duração", "en": "per video" } },
+			{
+				"value": "2",
+				"label": {
+					"pt": "temas (escuro e claro)",
+					"en": "themes (dark and light)"
+				}
+			}
+		],
+		"link": {
+			"label": { "pt": "ver os vídeos", "en": "watch the videos" },
+			"href": "/projetos/cd-ui"
+		}
+	},
+	"modes": {
+		"title": { "pt": "modos", "en": "modes" },
+		"items": [
+			{
+				"term": "script",
+				"text": {
+					"pt": "o padrão quando o fluxo roda no navegador. A IA captura, edita e revisa.",
+					"en": "the default when the flow runs in the browser. The AI captures, edits and reviews it."
+				}
+			},
+			{
+				"term": "manual",
+				"text": {
+					"pt": "você grava no Recordly seguindo o roteiro. Serve quando o fluxo usa janela do sistema, como o seletor de arquivo.",
+					"en": "you record in Recordly from the shot list. For flows that use system windows, like the file picker."
+				}
+			}
+		]
+	},
+	"post": "/blog/videos-de-demo-do-portfolio"
+}

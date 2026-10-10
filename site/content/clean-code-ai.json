@@ -1,0 +1,110 @@
+{
+	"tagline": {
+		"pt": "a menor mudança correta, segura e legível que cabe no projeto.",
+		"en": "the smallest correct, safe and readable change that fits the project."
+	},
+	"headline": {
+		"pt": "o menor código que resolve certo.",
+		"en": "the smallest code that solves it right."
+	},
+	"idea": {
+		"title": { "pt": "a ideia", "en": "the idea" },
+		"kind": "diff",
+		"file": "total.ts",
+		"counter": "-6 +1",
+		"lines": [
+			["-", "interface PriceCalculator { calculate(items: Item[]): number }"],
+			["-", "class DefaultPriceCalculator implements PriceCalculator {"],
+			["-", "  calculate(items: Item[]) {"],
+			["-", "    return items.reduce((sum, item) => sum + item.price, 0)"],
+			["-", "  }"],
+			["-", "}"],
+			["+", "const total = items.reduce((sum, item) => sum + item.price, 0)"]
+		],
+		"caption": {
+			"pt": "Faz a mesma coisa sem uma interface e uma classe pra um cálculo que só aparece aqui. Encurtar nunca vale tirar validação, tratamento de erro ou acessibilidade.",
+			"en": "Same result, without an interface and a class for a sum that only happens here. Shorter is never worth dropping validation, error handling or accessibility."
+		}
+	},
+	"list": {
+		"title": { "pt": "a escada", "en": "the ladder" },
+		"intro": {
+			"pt": "Para no primeiro degrau que resolve certo.",
+			"en": "Stop at the first rung that solves it correctly."
+		},
+		"items": [
+			{ "pt": "precisa existir?", "en": "does it need to exist?" },
+			{ "pt": "remover código", "en": "remove code" },
+			{
+				"pt": "reusar o que já tem no projeto",
+				"en": "reuse what the project already has"
+			},
+			{ "pt": "biblioteca padrão", "en": "standard library" },
+			{
+				"pt": "recurso nativo da plataforma (HTML/CSS antes de JS)",
+				"en": "native platform feature (HTML/CSS before JS)"
+			},
+			{
+				"pt": "dependência já instalada",
+				"en": "an already-installed dependency"
+			},
+			{ "pt": "poucas linhas de código", "en": "a few lines of code" },
+			{
+				"pt": "abstração, só com 2+ usos reais ou fronteira externa",
+				"en": "abstraction, only with 2+ real uses or an external boundary"
+			},
+			{ "pt": "dependência nova", "en": "a new dependency" },
+			{ "pt": "infraestrutura nova", "en": "new infrastructure" }
+		]
+	},
+	"stats": {
+		"title": { "pt": "teste", "en": "benchmark" },
+		"items": [
+			{
+				"value": "191/200",
+				"label": { "pt": "clean-code-ai", "en": "clean-code-ai" }
+			},
+			{ "value": "176/200", "label": { "pt": "sem regras", "en": "no rules" } },
+			{ "value": "166/200", "label": { "pt": "ponytail", "en": "ponytail" } }
+		],
+		"caption": {
+			"pt": "5 tarefas pequenas que eu escrevi, avaliadas às cegas por outro modelo. Rodei cada versão uma vez só, então serve de termômetro, não de prova.",
+			"en": "5 small tasks I wrote, graded blind by another model. Each version ran once, so read it as a rough check, not proof."
+		},
+		"link": {
+			"label": { "pt": "ver resultados", "en": "see results" },
+			"href": "https://github.com/di0rio/cd-skills/blob/main/bench/clean-code-ai/RESULTS.md"
+		}
+	},
+	"modes": {
+		"title": { "pt": "níveis", "en": "levels" },
+		"intro": {
+			"pt": "Troque o nível com `/clean-code-ai lite|full|ultra|off`.",
+			"en": "Switch the level with `/clean-code-ai lite|full|ultra|off`."
+		},
+		"items": [
+			{
+				"term": "lite",
+				"text": {
+					"pt": "faz o que foi pedido e cita a alternativa mais simples em uma linha.",
+					"en": "does what was asked and mentions the simplest alternative in one line."
+				}
+			},
+			{
+				"term": "full",
+				"text": {
+					"pt": "o padrão. Segue a escada e, se a mudança passa de ~50 linhas ou cria arquivo, abstração ou dependência, explica por quê.",
+					"en": "the default. Follows the ladder and, when a change goes past ~50 lines or adds a file, abstraction or dependency, says why."
+				}
+			},
+			{
+				"term": "ultra",
+				"text": {
+					"pt": "YAGNI extremo. Remove antes de adicionar e questiona o resto do pedido.",
+					"en": "extreme YAGNI. Removes before adding and questions the rest of the request."
+				}
+			}
+		]
+	},
+	"post": "/blog/skill-de-codigo-pragmatico"
+}

@@ -1,0 +1,82 @@
+{
+	"tagline": {
+		"pt": "deixa o texto com a voz de quem assina, sem cara de IA.",
+		"en": "keeps the text in the voice of whoever signs it, without the AI feel."
+	},
+	"headline": {
+		"pt": "o texto com a sua voz, não com a da IA.",
+		"en": "text in your voice, not the AI's."
+	},
+	"idea": {
+		"title": { "pt": "a ideia", "en": "the idea" },
+		"kind": "beforeAfter",
+		"before": {
+			"pt": "Trabalho na Loopscape fazendo produto de ponta a ponta. Meu forte é o front, mas pego do banco e da API até o último estado da tela.",
+			"en": "I work at Loopscape building products end to end. Front-end is my thing, but I go from the database and API all the way to the last screen state."
+		},
+		"after": {
+			"pt": "Sou dev front-end júnior na Loopscape e trabalho na Loopvet, um sistema pra clínica veterinária. O que eu mais curto é motion e design, e o lab aqui do site é onde eu demonstro isso.",
+			"en": "I'm a junior front-end dev at Loopscape, working on Loopvet, a system for veterinary clinics. What I enjoy most is motion and design, and the lab on this site is where I show that."
+		},
+		"caption": {
+			"pt": "A bio da home antes e depois. O 'antes' é onde a IA chega sozinha. O 'depois' saiu de várias rodadas de 'não, eu não falo assim'.",
+			"en": "The home bio before and after. The 'before' is where AI gets on its own. The 'after' came out of several rounds of 'no, I don't talk like that'."
+		}
+	},
+	"list": {
+		"title": { "pt": "o que ela pega", "en": "what it catches" },
+		"items": [
+			{
+				"pt": "faixa abstrata tipo \"do banco até a tela\"",
+				"en": "abstract ranges like \"from the database to the screen\""
+			},
+			{
+				"pt": "frase de efeito no fim do parágrafo",
+				"en": "a slogan at the end of the paragraph"
+			},
+			{
+				"pt": "dois-pontos seguido de lista de três",
+				"en": "a colon followed by a list of three"
+			},
+			{
+				"pt": "imagem esperta que ninguém entende",
+				"en": "a clever image nobody gets"
+			},
+			{
+				"pt": "termo técnico que a pessoa não falaria",
+				"en": "jargon the person wouldn't say"
+			},
+			{
+				"pt": "cópia da referência em vez de inspiração",
+				"en": "copying the reference instead of taking inspiration"
+			}
+		]
+	},
+	"modes": {
+		"title": { "pt": "modos", "en": "modes" },
+		"items": [
+			{
+				"term": { "pt": "reescrever", "en": "rewrite" },
+				"text": {
+					"pt": "você cola o texto e ela devolve na sua voz.",
+					"en": "you paste a text and get it back in your voice."
+				}
+			},
+			{
+				"term": { "pt": "escrever", "en": "write" },
+				"text": {
+					"pt": "ela já escreve post, bio ou README seguindo as regras.",
+					"en": "it writes posts, bios or READMEs following the rules from the start."
+				}
+			},
+			{
+				"term": { "pt": "inspirar", "en": "inspire" },
+				"text": {
+					"pt": "você manda o texto de outra pessoa e ela pega a ideia, sem copiar.",
+					"en": "you send someone else's text and it takes the idea without copying it."
+				}
+			}
+		]
+	},
+	"post": "/blog/skill-humanizar"
+}
