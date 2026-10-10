@@ -1,0 +1,33 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "skills/**", ".github/workflows/site.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["site/**", "skills/**", ".github/workflows/site.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: site/package.json
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run typecheck
+      - run: bun test
+      - run: bun run build
