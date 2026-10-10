@@ -2,6 +2,8 @@
 
 Skills I wrote for AI coding agents (Claude Code, Codex, Cursor and others). Each one is a single `SKILL.md`, with a Portuguese version next to it (`SKILL.pt.md`).
 
+Browse them at [cd-skills.vercel.app](https://cd-skills.vercel.app).
+
 | Skill | What it does |
 | --- | --- |
 | [clean-code-ai](skills/clean-code-ai/) | Asks for the smallest correct, safe and readable change that fits the project, with security, correctness and contracts above "do less". Tested on a small blind benchmark ([`bench/clean-code-ai/`](bench/clean-code-ai/)). |
