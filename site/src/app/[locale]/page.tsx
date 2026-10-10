@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Avatar } from "@/components/avatar";
 import { CommandLine } from "@/components/command-line";
+import { Decode } from "@/components/decode";
+import { GlyphArt } from "@/components/glyph-art";
 import { Rich } from "@/components/rich";
 import { Section } from "@/components/section";
 import { MiniDemo } from "@/components/skill-blocks";
@@ -35,6 +37,10 @@ export default async function Home() {
 		before: copy.skills.before,
 		after: copy.skills.after,
 	};
+	// Texto das próprias skills: é com ele que o `cd/` do hero é desenhado.
+	const pool = skills
+		.map(({ source }) => source.replace(/[^!-~]/g, "").slice(0, 700))
+		.join("");
 	const steps = [
 		[how.step1, how.text1],
 		[how.step2, how.text2],
@@ -43,19 +49,21 @@ export default async function Home() {
 
 	return (
 		<>
-			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[calc(100svh-6rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
+			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[min(calc(100svh-6rem),48rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
 				<div>
-					<p className="font-mono text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
+					<p className="enter font-mono text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
 						{hero.eyebrow({ count: String(skills.length) })}
 					</p>
 					<h1 className="display mt-6 text-[clamp(2.5rem,6.4vw,5.75rem)]">
-						{hero.line1}
-						<span className="block text-muted-foreground">{hero.line2}</span>
+						<Decode text={hero.line1} />{" "}
+						<span className="block text-muted-foreground">
+							<Decode text={hero.line2} />
+						</span>
 					</h1>
-					<p className="mt-7 max-w-[44ch] text-lg text-muted-foreground sm:text-xl">
+					<p className="enter mt-7 max-w-[44ch] text-lg text-muted-foreground sm:text-xl">
 						<Rich text={hero.sub} />
 					</p>
-					<div className="mt-9 flex flex-wrap items-center gap-3">
+					<div className="enter mt-9 flex flex-wrap items-center gap-3">
 						<Button
 							nativeButton={false}
 							render={<a href="#instalar" />}
@@ -75,16 +83,11 @@ export default async function Home() {
 						</Button>
 					</div>
 				</div>
-				<div className="hero-art relative mx-auto aspect-[5/4] w-full max-w-[34rem]">
-					<p
-						aria-hidden="true"
-						className="absolute inset-0 flex items-center justify-center font-bold font-mono text-[clamp(7rem,20vw,13rem)] text-brand-foreground leading-none tracking-[-0.06em]"
-					>
-						cd/
-					</p>
+				<div className="hero-art relative mx-auto mb-10 aspect-[2/1] w-full max-w-[36rem]">
+					<GlyphArt pool={pool} />
 					<Avatar
 						alt={hero.avatar}
-						className="absolute right-[4%] bottom-[2%] size-28 sm:size-36"
+						className="absolute right-2 -bottom-12 size-24 sm:size-28"
 					/>
 				</div>
 			</section>
@@ -103,6 +106,7 @@ export default async function Home() {
 							const landing = content(skill.slug);
 							return (
 								<li
+									data-reveal
 									className="row relative border-t outline-offset-[-2px] outline-ring has-[a:focus-visible]:outline-2"
 									key={skill.slug}
 								>
@@ -156,7 +160,7 @@ export default async function Home() {
 			<Section id="como-funciona" label={how.label} n={2} title={how.title}>
 				<ol className="grid gap-x-10 gap-y-12 md:grid-cols-3">
 					{steps.map(([title, text], i) => (
-						<li className="border-t pt-6" key={title}>
+						<li className="border-t pt-6" data-reveal key={title}>
 							<span className="font-bold font-mono text-5xl text-brand-foreground leading-none tabular-nums">
 								{pad(i + 1)}
 							</span>
@@ -168,11 +172,20 @@ export default async function Home() {
 			</Section>
 
 			<Section id="instalar" label={install.label} n={3} title={install.title}>
-				<Tabs defaultValue="cli">
-					<TabsList aria-label={install.tabs}>
-						<TabsTab value="cli">{install.cli}</TabsTab>
-						<TabsTab value="claude">{install.claude}</TabsTab>
-						<TabsTab value="others">{install.others}</TabsTab>
+				<Tabs data-reveal defaultValue="cli">
+					<TabsList
+						aria-label={install.tabs}
+						className="max-w-full overflow-x-auto"
+					>
+						<TabsTab className="shrink-0" value="cli">
+							{install.cli}
+						</TabsTab>
+						<TabsTab className="shrink-0" value="claude">
+							{install.claude}
+						</TabsTab>
+						<TabsTab className="shrink-0" value="others">
+							{install.others}
+						</TabsTab>
 					</TabsList>
 					<TabsPanel className="mt-4 flex flex-col gap-4" value="cli">
 						<p className="max-w-[56ch] text-lg text-muted-foreground">

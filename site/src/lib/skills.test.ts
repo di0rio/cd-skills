@@ -145,7 +145,7 @@ describe("readSkills", () => {
 		write("zeta/README.md", "# Zeta\n\nEnglish body only.\n");
 		write(
 			"alfa/SKILL.md",
-			"---\nname: alfa\ndescription: English text.\n---\n",
+			"---\nname: alfa\ndescription: English text.\n---\n\n# Alfa\n\nRule one.\n",
 		);
 		write(
 			"alfa/SKILL.pt.md",
@@ -184,6 +184,12 @@ describe("readSkills", () => {
 			body: "English body only.\n",
 			translated: false,
 		});
+	});
+
+	test("source é o corpo do SKILL.md, sem o frontmatter", () => {
+		const [alfa, zeta] = readSkills(dir);
+		expect(alfa.source).toBe("\n# Alfa\n\nRule one.\n");
+		expect(zeta.source).toBe("");
 	});
 
 	test("pasta que não existe dá lista vazia", () => {

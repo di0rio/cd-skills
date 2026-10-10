@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Decode } from "./decode";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -38,7 +39,7 @@ export function Section({
 							className="display text-[clamp(2rem,4.6vw,3.75rem)]"
 							id={`${id}-title`}
 						>
-							{title}
+							<Decode text={title} />
 						</h2>
 						{intro && (
 							<p className="mt-5 max-w-[56ch] text-lg text-muted-foreground">

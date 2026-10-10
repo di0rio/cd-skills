@@ -391,3 +391,71 @@ html[data-pending] main {
 		transition: none;
 	}
 }
+
+/* ---- Movimento ----
+   Só transform, opacity e clip-path. O conteúdo é visível por padrão: o que esconde algo (barras zeradas) só vale
+   depois que o JS marca o bloco, e tudo some com o botão de pausa (`data-motion-paused`) ou `prefers-reduced-motion`. */
+
+/* Entrada do hero: sobe 8px e aparece, em degraus de 70ms. Transição com @starting-style, então o estado normal é visível. */
+@utility enter {
+	transition:
+		opacity 500ms var(--cd-ease-out) calc(var(--i, 0) * 70ms),
+		translate 500ms var(--cd-ease-out) calc(var(--i, 0) * 70ms);
+	@starting-style {
+		opacity: 0;
+		translate: 0 8px;
+	}
+}
+.enter:nth-child(3) {
+	--i: 1;
+}
+.enter:nth-child(4) {
+	--i: 2;
+}
+
+/* Barras de números: enchem uma vez, quando o bloco entra na tela. Escondidas só enquanto o JS espera (`data-armed`). */
+.bar {
+	transform: scaleX(var(--w, 1));
+	transition: transform 800ms var(--cd-ease-out);
+}
+[data-armed]:not([data-in]) .bar {
+	transform: scaleX(0);
+	transition: none;
+}
+
+/* Blocos que sobem e aparecem conforme entram na viewport (scroll-driven, sem JS). Onde não existe, ficam parados. */
+@keyframes reveal {
+	from {
+		opacity: 0;
+		translate: 0 24px;
+	}
+}
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		html:not([data-motion-paused]) [data-reveal] {
+			animation: reveal 1ms var(--cd-ease-out) both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 80%;
+		}
+	}
+}
+
+/* Pausa do site: nada se mexe, tudo fica visível. */
+html[data-motion-paused] *,
+html[data-motion-paused] *::before,
+html[data-motion-paused] *::after {
+	animation: none;
+	transition-duration: 0.01ms;
+	transition-delay: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+	.bar {
+		transition: none;
+	}
+	.enter {
+		transition: opacity 200ms ease;
+		@starting-style {
+			translate: 0 0;
+		}
+	}
+}

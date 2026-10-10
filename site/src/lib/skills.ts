@@ -10,6 +10,8 @@ export type Skill = {
 	description: Record<Locale, string>;
 	/** Existe `SKILL.pt.md` ao lado do `SKILL.md`. */
 	hasPt: boolean;
+	/** Corpo do `SKILL.md` (sem o frontmatter). */
+	source: string;
 	/** README sem o título. `translated: false` = não há versão nesse idioma, o texto é o inglês. */
 	readme: Record<Locale, { body: string; translated: boolean }>;
 };
@@ -58,13 +60,16 @@ export function readSkills(dir: string): Skill[] {
 		)
 		.map(({ name: slug }) => {
 			const read = (file: string) => readIfExists(join(dir, slug, file));
-			const en = parseFrontmatter(read("SKILL.md") ?? "").data;
+			const { data: en, body: source } = parseFrontmatter(
+				read("SKILL.md") ?? "",
+			);
 			const pt = parseFrontmatter(read("SKILL.pt.md") ?? "").data;
 			const readmeEn = stripTitle(read("README.md") ?? "");
 			const readmePt = read("README.pt.md");
 			return {
 				slug,
 				name: en.name || slug,
+				source,
 				description: {
 					en: en.description ?? "",
 					pt: pt.description || en.description || "",

@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Avatar } from "@/components/avatar";
 import { CommandLine } from "@/components/command-line";
+import { Decode } from "@/components/decode";
+import { InView } from "@/components/in-view";
 import { Markdown } from "@/components/markdown";
 import { Rich } from "@/components/rich";
 import { Section } from "@/components/section";
@@ -101,7 +103,9 @@ export default async function SkillPage({
 			title: pick(landing.stats.title, locale),
 			body: (
 				<>
-					<Stats items={landing.stats.items} locale={locale} />
+					<InView>
+						<Stats items={landing.stats.items} locale={locale} />
+					</InView>
 					{(landing.stats.caption || landing.stats.link) && (
 						<p className="mt-6 max-w-[62ch] text-muted-foreground">
 							{landing.stats.caption && pick(landing.stats.caption, locale)}{" "}
@@ -155,12 +159,16 @@ export default async function SkillPage({
 						<span className="text-brand-foreground">{pad(index + 1)}</span>
 					</p>
 					<h1 className="display mt-5 break-words text-[clamp(2.25rem,9vw,8rem)]">
-						{skill.name}
+						<Decode text={skill.name} />
 					</h1>
 					<p className="mt-6 max-w-[32ch] font-bold font-mono text-[clamp(1.375rem,2.8vw,2.25rem)] text-muted-foreground leading-tight tracking-[-0.02em]">
-						{landing
-							? pick(landing.headline, locale)
-							: firstSentence(skill.description[locale])}
+						<Decode
+							text={
+								landing
+									? pick(landing.headline, locale)
+									: firstSentence(skill.description[locale])
+							}
+						/>
 					</p>
 					{landing && (
 						<p className="mt-5 max-w-[56ch] text-lg text-muted-foreground">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ViewTransition } from "react";
 import "../globals.css";
 import { LocaleSwitch } from "@/components/site-shell/locale-switch";
+import { MotionToggle } from "@/components/site-shell/motion-toggle";
 import { SitePrompt } from "@/components/site-shell/site-prompt";
 import { ThemeProvider } from "@/components/site-shell/theme-provider";
 import { ThemeSwitch } from "@/components/site-shell/theme-switch";
@@ -75,6 +76,7 @@ export default async function RootLayout({
 						>
 							{shell.skip}
 						</a>
+						<MotionToggle labels={shell.motion} />
 						<header className="sticky top-3 z-40 px-3 pt-3">
 							<div className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border bg-background/75 py-1.5 pr-1.5 pl-4 backdrop-blur-md sm:gap-2">
 								<SitePrompt label={shell.nav.home} locale={locale} />

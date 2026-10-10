@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Locale } from "@/i18n/generated";
 import { type Idea, pick, type SkillContent, type Text } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -59,7 +60,7 @@ export function DiffCard({
 	labels: Labels;
 }) {
 	return (
-		<figure>
+		<figure data-reveal>
 			<div className="overflow-hidden rounded-xl border bg-card">
 				<div className="flex items-center justify-between border-b px-4 py-2 font-mono text-muted-foreground text-xs">
 					<span>{idea.file}</span>
@@ -88,7 +89,7 @@ export function BeforeAfter({
 }) {
 	if (!idea.before || !idea.after) return null;
 	return (
-		<figure>
+		<figure data-reveal>
 			<div className="grid gap-4 md:grid-cols-2">
 				<div className="rounded-xl border bg-card p-5 sm:p-6">
 					<p className="font-mono text-muted-foreground text-xs uppercase tracking-[0.18em]">
@@ -164,6 +165,7 @@ export function Ladder({ items, locale }: { items: Text[]; locale: Locale }) {
 		<ol className="border-b">
 			{items.map((item, i) => (
 				<li
+					data-reveal
 					className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-baseline gap-4 border-t py-4 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:py-5"
 					key={item.pt}
 				>
@@ -198,7 +200,7 @@ export function Stats({
 		return (
 			<dl className="grid gap-x-8 gap-y-10 sm:grid-cols-3">
 				{items.map((item) => (
-					<div key={item.value}>
+					<div data-reveal key={item.value}>
 						<dd className="font-bold font-mono text-[clamp(2.75rem,6vw,4.5rem)] leading-none tracking-[-0.04em]">
 							{item.value}
 						</dd>
@@ -214,6 +216,7 @@ export function Stats({
 		<dl className="border-b">
 			{items.map((item, i) => (
 				<div
+					data-reveal
 					className="grid items-center gap-x-10 gap-y-3 border-t py-6 sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:py-8"
 					key={item.value}
 				>
@@ -243,7 +246,7 @@ export function Stats({
 									"bar block h-full origin-left",
 									ratios[i] === top ? "bg-brand" : "bg-muted-foreground/50",
 								)}
-								style={{ transform: `scaleX(${ratios[i]})` }}
+								style={{ "--w": ratios[i] } as CSSProperties}
 							/>
 						</span>
 					</dt>
@@ -264,6 +267,7 @@ export function Modes({
 		<dl className="border-b">
 			{items.map((item) => (
 				<div
+					data-reveal
 					className="grid gap-x-10 gap-y-2 border-t py-6 sm:grid-cols-[11rem_minmax(0,1fr)] sm:py-7"
 					key={item.term.pt}
 				>
