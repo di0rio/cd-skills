@@ -7,7 +7,7 @@ const GLYPHS = "<>[]{}()/|*+=#$%&0123456789";
 const DURATION = 520;
 
 /**
- * Título que "decodifica": quando entra na tela, cada letra sai de um símbolo e vira a letra certa, da esquerda
+ * Título que "decodifica": quando entra na tela depois da carga (os já visíveis ficam como texto), cada letra sai de um símbolo e vira a letra certa, da esquerda
  * pra direita, uma vez só. O texto de verdade fica num span só pra leitor de tela e aparece inteiro sem JS.
  * Espaços ficam onde estão e a fonte é mono, então nada muda de tamanho nem quebra linha diferente.
  */
@@ -17,6 +17,9 @@ export function Decode({ text }: { text: string }) {
 	useEffect(() => {
 		const el = ref.current;
 		if (!el || motionOff()) return;
+		// Título já visível na carga fica como texto: decodificar na cara do leitor seria um piscar.
+		const box = el.getBoundingClientRect();
+		if (box.bottom > 0 && box.top < innerHeight) return;
 		let frame = 0;
 		let start = 0;
 		const tick = (now: number) => {

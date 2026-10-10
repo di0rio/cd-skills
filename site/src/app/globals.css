@@ -459,3 +459,37 @@ html[data-motion-paused] *::after {
 		}
 	}
 }
+
+/* Brilho do glyph art: uma faixa clara atravessa o `cd/` de tempos em tempos. É uma cópia clara da tinta, parada,
+   revelada por uma janela de clip-path que anda da esquerda pra direita: um elemento só, sem nada pra dessincronizar,
+   e o canvas não é redesenhado. Pausa fora da tela, com o botão de pausa e em prefers-reduced-motion. */
+@keyframes glyph-shine {
+	from {
+		clip-path: inset(0 100% 0 -22%);
+	}
+	40%,
+	to {
+		clip-path: inset(0 -22% 0 100%);
+	}
+}
+.glyph-shine {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	opacity: 0.85;
+	clip-path: inset(0 100% 0 0);
+	animation: glyph-shine 7s var(--cd-ease-in-out) 1.8s infinite backwards paused;
+}
+[data-visible] .glyph-shine {
+	animation-play-state: running;
+}
+html[data-motion-paused] .glyph-shine {
+	display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.glyph-shine {
+		display: none;
+	}
+}
