@@ -3,6 +3,9 @@ export default {
 	nav: {
 		label: { pt: "Links", en: "Links" },
 		home: { pt: "início", en: "home" },
+		skills: { pt: "skills", en: "skills" },
+		how: { pt: "como funciona", en: "how it works" },
+		install: { pt: "instalar", en: "install" },
 		github: { pt: "github", en: "github" },
 		portfolio: { pt: "portfólio", en: "portfolio" },
 	},
@@ -20,6 +23,10 @@ export default {
 	copy: {
 		label: { pt: "Copiar", en: "Copy" },
 		done: { pt: "Copiado", en: "Copied" },
+	},
+	motion: {
+		pause: { pt: "pausar movimento", en: "pause motion" },
+		play: { pt: "retomar movimento", en: "resume motion" },
 	},
 	footer: {
 		license: { pt: "MIT", en: "MIT" },

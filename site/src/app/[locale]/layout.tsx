@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Ubuntu, Ubuntu_Mono } from "next/font/google";
+import Link from "next/link";
 import { ViewTransition } from "react";
 import "../globals.css";
 import { LocaleSwitch } from "@/components/site-shell/locale-switch";
@@ -7,6 +8,7 @@ import { SitePrompt } from "@/components/site-shell/site-prompt";
 import { ThemeProvider } from "@/components/site-shell/theme-provider";
 import { ThemeSwitch } from "@/components/site-shell/theme-switch";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { localePath } from "@/i18n/path";
 import { getT, locales } from "@/i18n/server";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -38,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const navLink =
-	"rounded-md px-2 py-1 outline-none transition-colors duration-150 hover:text-foreground focus-visible:ring-2 focus-visible:ring-brand";
+	"rounded-full px-3 py-1.5 outline-none transition-colors duration-150 hover:text-foreground focus-visible:ring-2 focus-visible:ring-brand";
 const footerLink =
 	"rounded-sm underline decoration-muted-foreground/40 underline-offset-4 hover:text-foreground hover:decoration-brand";
 
@@ -47,6 +49,11 @@ export default async function RootLayout({
 }: LayoutProps<"/[locale]">) {
 	const { locale, t } = await getT();
 	const shell = t.components["site-shell"];
+	const anchors = [
+		["skills", shell.nav.skills],
+		["como-funciona", shell.nav.how],
+		["instalar", shell.nav.install],
+	] as const;
 
 	return (
 		<html
@@ -58,7 +65,7 @@ export default async function RootLayout({
 			lang={locale}
 			suppressHydrationWarning
 		>
-			<body className="flex min-h-full flex-col bg-background text-[15px] text-foreground leading-[1.65]">
+			<body className="flex min-h-full flex-col bg-background text-[16px] text-foreground leading-[1.65]">
 				<ThemeProvider>
 					<TooltipProvider>
 						{/* Primeiro foco da página: pula o header e vai direto pro conteúdo. */}
@@ -68,37 +75,36 @@ export default async function RootLayout({
 						>
 							{shell.skip}
 						</a>
-						{/* Uma coluna só (640px): header, conteúdo e rodapé alinhados no mesmo eixo. */}
-						<header className="mx-auto grid w-full max-w-[640px] grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-4 pt-6 sm:grid-cols-[1fr_auto_1fr]">
-							<SitePrompt label={shell.nav.home} locale={locale} />
-							<nav
-								aria-label={shell.nav.label}
-								className="max-sm:order-last max-sm:col-span-2 max-sm:-mx-2"
-							>
-								<ul className="flex items-center gap-1 text-muted-foreground text-sm">
-									<li>
-										<a
-											className={navLink}
-											href={site.github}
-											rel="noopener"
-											target="_blank"
-										>
-											{shell.nav.github}
-										</a>
-									</li>
-									<li>
-										<a
-											className={navLink}
-											href={site.portfolio}
-											rel="noopener"
-											target="_blank"
-										>
-											{shell.nav.portfolio}
-										</a>
-									</li>
-								</ul>
-							</nav>
-							<div className="flex items-center gap-2 justify-self-end">
+						<header className="sticky top-3 z-40 px-3 pt-3">
+							<div className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border bg-background/75 py-1.5 pr-1.5 pl-4 backdrop-blur-md sm:gap-2">
+								<SitePrompt label={shell.nav.home} locale={locale} />
+								<nav
+									aria-label={shell.nav.label}
+									className="flex items-center text-muted-foreground text-sm max-sm:ml-1"
+								>
+									<ul className="flex items-center">
+										{anchors.map(([id, label]) => (
+											<li className="max-md:hidden" key={id}>
+												<Link
+													className={navLink}
+													href={localePath(locale, `/#${id}`)}
+												>
+													{label}
+												</Link>
+											</li>
+										))}
+										<li>
+											<a
+												className={cn(navLink, "text-foreground")}
+												href={site.github}
+												rel="noopener"
+												target="_blank"
+											>
+												{shell.nav.github}
+											</a>
+										</li>
+									</ul>
+								</nav>
 								<LocaleSwitch label={shell.language.label} locale={locale} />
 								<ThemeSwitch labels={shell.theme} />
 							</div>
@@ -107,7 +113,7 @@ export default async function RootLayout({
 						{/* Trocar de página anima só o conteúdo; header e rodapé ficam parados. */}
 						<ViewTransition default="page">
 							<main
-								className="mx-auto flex w-full min-w-0 max-w-[640px] flex-1 flex-col gap-16 px-4 pt-16 pb-24 outline-none"
+								className="flex min-w-0 flex-1 flex-col outline-none"
 								id="conteudo"
 								tabIndex={-1}
 							>
@@ -115,23 +121,35 @@ export default async function RootLayout({
 							</main>
 						</ViewTransition>
 
-						<footer className="mx-auto flex w-full max-w-[640px] flex-wrap items-center justify-between gap-4 border-t px-4 py-6 text-muted-foreground text-sm">
-							<a
-								className={footerLink}
-								href={site.github}
-								rel="noopener"
-								target="_blank"
-							>
-								{shell.footer.license} · {site.repo}
-							</a>
-							<a
-								className={footerLink}
-								href={site.portfolio}
-								rel="noopener"
-								target="_blank"
-							>
-								{shell.footer.made}
-							</a>
+						<footer className="mt-28 border-t sm:mt-40">
+							<div className="wrap flex flex-col gap-10 py-14 sm:py-20">
+								<p
+									aria-hidden="true"
+									className="font-bold font-mono text-[clamp(1.75rem,6.4vw,4.5rem)] leading-none tracking-[-0.04em]"
+								>
+									<span className="text-brand-foreground">~</span>/cd-skills{" "}
+									<span className="text-muted-foreground">$</span>{" "}
+									<span className="inline-block h-[0.85em] w-[0.5em] translate-y-[0.1em] animate-caret bg-brand motion-reduce:animate-none" />
+								</p>
+								<div className="flex flex-wrap items-center justify-between gap-4 text-muted-foreground text-sm">
+									<a
+										className={footerLink}
+										href={site.github}
+										rel="noopener"
+										target="_blank"
+									>
+										{shell.footer.license} · {site.repo}
+									</a>
+									<a
+										className={footerLink}
+										href={site.portfolio}
+										rel="noopener"
+										target="_blank"
+									>
+										{shell.footer.made}
+									</a>
+								</div>
+							</div>
 						</footer>
 					</TooltipProvider>
 				</ThemeProvider>

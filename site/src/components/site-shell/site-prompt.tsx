@@ -21,14 +21,14 @@ export function SitePrompt({
 	return (
 		<Link
 			aria-label={label}
-			className="group flex items-baseline gap-2 justify-self-start rounded-md font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-brand"
+			className="group flex items-baseline gap-2 justify-self-start rounded-full font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-brand"
 			href={localePath(locale, "/")}
 		>
 			<span className="font-bold text-base text-foreground">
 				cd<span className="text-brand-foreground">/</span>skills
 			</span>
 			<span aria-hidden="true" className="text-muted-foreground">
-				~{segment ? `/${segment}` : ""} ${" "}
+				<span className="max-sm:hidden">~{segment ? `/${segment}` : ""} </span>${" "}
 				<span className="inline-block h-[1em] w-[0.5em] translate-y-[0.15em] animate-caret bg-brand motion-reduce:animate-none" />
 			</span>
 		</Link>

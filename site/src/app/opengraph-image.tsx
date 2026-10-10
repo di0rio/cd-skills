@@ -8,7 +8,7 @@ export const contentType = "image/png";
 
 export default function Image() {
 	return pageOg({
-		title: translations.pt.app.home.title,
+		title: translations.pt.app.home.skills.label,
 		description: translations.pt.app.meta.description,
 	});
 }

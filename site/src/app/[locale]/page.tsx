@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { Avatar } from "@/components/avatar";
 import { CommandLine } from "@/components/command-line";
 import { Rich } from "@/components/rich";
+import { Section } from "@/components/section";
+import { MiniDemo } from "@/components/skill-blocks";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { localePath } from "@/i18n/path";
 import { alternates, getT } from "@/i18n/server";
+import { content, pick } from "@/lib/content";
 import { site } from "@/lib/site";
 import { firstSentence, installAll, installOne, skills } from "@/lib/skills";
 
@@ -18,84 +22,177 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
 export default async function Home() {
 	const { t, locale } = await getT();
 	const copy = t.app.home;
-	const install = copy.install;
+	const { hero, how, install } = copy;
 	const labels = t.components["site-shell"].copy;
+	const demoLabels = {
+		removed: copy.skills.removed,
+		added: copy.skills.added,
+		before: copy.skills.before,
+		after: copy.skills.after,
+	};
+	const steps = [
+		[how.step1, how.text1],
+		[how.step2, how.text2],
+		[how.step3, how.text3],
+	] as const;
 
 	return (
 		<>
-			<header className="flex flex-col gap-6">
+			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[calc(100svh-6rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
 				<div>
-					<h1 className="font-bold font-heading text-[22px] leading-tight">
-						{copy.title}
-					</h1>
-					<p className="mt-1.5 max-w-[520px] text-pretty text-muted-foreground">
-						<Rich text={copy.intro} />
+					<p className="font-mono text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
+						{hero.eyebrow({ count: String(skills.length) })}
 					</p>
+					<h1 className="display mt-6 text-[clamp(2.5rem,6.4vw,5.75rem)]">
+						{hero.line1}
+						<span className="block text-muted-foreground">{hero.line2}</span>
+					</h1>
+					<p className="mt-7 max-w-[44ch] text-lg text-muted-foreground sm:text-xl">
+						<Rich text={hero.sub} />
+					</p>
+					<div className="mt-9 flex flex-wrap items-center gap-3">
+						<Button
+							nativeButton={false}
+							render={<a href="#instalar" />}
+							size="lg"
+							variant="brand"
+						>
+							{hero.install}
+						</Button>
+						<Button
+							nativeButton={false}
+							render={<a href="#skills" />}
+							size="lg"
+							variant="ghost"
+						>
+							{hero.browse}
+							<span aria-hidden="true">↓</span>
+						</Button>
+					</div>
 				</div>
-				<CommandLine command={installAll} copy={labels} />
-			</header>
-
-			<section aria-labelledby="skills" className="scroll-mt-8">
-				<h2 className="mb-5 text-muted-foreground" id="skills">
-					{copy.list}
-				</h2>
-				{skills.length === 0 ? (
-					<p className="text-muted-foreground">{copy.empty}</p>
-				) : (
-					<ul className="flex flex-col gap-6">
-						{skills.map((skill, i) => (
-							<li
-								className="rise"
-								key={skill.slug}
-								style={{ "--i": i } as CSSProperties}
-							>
-								<Link
-									className="rounded-sm font-mono text-base underline decoration-muted-foreground/40 underline-offset-4 outline-none transition-[text-decoration-color] duration-150 hover:decoration-brand focus-visible:ring-2 focus-visible:ring-brand"
-									href={localePath(locale, `/${skill.slug}`)}
-								>
-									{skill.name}
-								</Link>
-								<p className="mt-1 max-w-[520px] text-pretty text-muted-foreground">
-									{firstSentence(skill.description[locale])}
-								</p>
-							</li>
-						))}
-					</ul>
-				)}
+				<div className="hero-art relative mx-auto aspect-[5/4] w-full max-w-[34rem]">
+					<p
+						aria-hidden="true"
+						className="absolute inset-0 flex items-center justify-center font-bold font-mono text-[clamp(7rem,20vw,13rem)] text-brand-foreground leading-none tracking-[-0.06em]"
+					>
+						cd/
+					</p>
+					<Avatar
+						alt={hero.avatar}
+						className="absolute right-[4%] bottom-[2%] size-28 sm:size-36"
+					/>
+				</div>
 			</section>
 
-			<section aria-labelledby="install" className="scroll-mt-8">
-				<h2 className="mb-5 text-muted-foreground" id="install">
-					{install.title}
-				</h2>
+			<Section
+				id="skills"
+				label={copy.skills.label}
+				n={1}
+				title={copy.skills.title}
+			>
+				{skills.length === 0 ? (
+					<p className="text-muted-foreground">{copy.skills.empty}</p>
+				) : (
+					<ul className="border-b">
+						{skills.map((skill, i) => {
+							const landing = content(skill.slug);
+							return (
+								<li
+									className="row relative border-t outline-offset-[-2px] outline-ring has-[a:focus-visible]:outline-2"
+									key={skill.slug}
+								>
+									<span
+										aria-hidden="true"
+										className="row-line absolute inset-x-0 -top-px h-px bg-brand"
+									/>
+									<div className="grid items-start gap-x-8 gap-y-6 py-8 sm:py-10 lg:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,25rem)_5rem]">
+										<span className="row-index font-bold font-mono text-[2.5rem] text-muted-foreground leading-none tabular-nums sm:text-[3.25rem]">
+											{pad(i + 1)}
+										</span>
+										<div className="min-w-0">
+											<h3 className="font-bold font-mono text-[clamp(1.75rem,3.4vw,2.75rem)] leading-tight tracking-[-0.03em]">
+												<Link
+													className="break-words outline-none after:absolute after:inset-0"
+													href={localePath(locale, `/${skill.slug}`)}
+												>
+													{skill.name}
+												</Link>
+											</h3>
+											<p className="mt-3 max-w-[42ch] text-lg text-muted-foreground">
+												{landing
+													? pick(landing.tagline, locale)
+													: firstSentence(skill.description[locale])}
+											</p>
+										</div>
+										{landing?.idea ? (
+											<MiniDemo
+												idea={landing.idea}
+												labels={demoLabels}
+												locale={locale}
+											/>
+										) : (
+											<span />
+										)}
+										<span
+											aria-hidden="true"
+											className="row-open hidden justify-self-end font-mono text-muted-foreground lg:block"
+										>
+											{copy.skills.open}{" "}
+											<span className="row-arrow inline-block">→</span>
+										</span>
+									</div>
+								</li>
+							);
+						})}
+					</ul>
+				)}
+			</Section>
+
+			<Section id="como-funciona" label={how.label} n={2} title={how.title}>
+				<ol className="grid gap-x-10 gap-y-12 md:grid-cols-3">
+					{steps.map(([title, text], i) => (
+						<li className="border-t pt-6" key={title}>
+							<span className="font-bold font-mono text-5xl text-brand-foreground leading-none tabular-nums">
+								{pad(i + 1)}
+							</span>
+							<h3 className="mt-6 font-bold font-mono text-xl">{title}</h3>
+							<p className="mt-3 text-muted-foreground">{text}</p>
+						</li>
+					))}
+				</ol>
+			</Section>
+
+			<Section id="instalar" label={install.label} n={3} title={install.title}>
 				<Tabs defaultValue="cli">
-					<TabsList aria-label={install.label}>
+					<TabsList aria-label={install.tabs}>
 						<TabsTab value="cli">{install.cli}</TabsTab>
 						<TabsTab value="claude">{install.claude}</TabsTab>
 						<TabsTab value="others">{install.others}</TabsTab>
 					</TabsList>
-					<TabsPanel className="flex flex-col gap-3" value="cli">
-						<p className="text-pretty text-muted-foreground">
+					<TabsPanel className="mt-4 flex flex-col gap-4" value="cli">
+						<p className="max-w-[56ch] text-lg text-muted-foreground">
 							<Rich text={install.cliText} />
 						</p>
-						<CommandLine command={installAll} copy={labels} />
-						<CommandLine command={installOne("<skill>")} copy={labels} />
+						<CommandLine command={installAll} copy={labels} large />
+						<CommandLine command={installOne("<skill>")} copy={labels} large />
 					</TabsPanel>
-					<TabsPanel value="claude">
-						<p className="text-pretty text-muted-foreground">
+					<TabsPanel className="mt-4" value="claude">
+						<p className="max-w-[56ch] rounded-xl border bg-card p-6 text-lg sm:p-8">
 							<Rich text={install.claudeText} />
 						</p>
 					</TabsPanel>
-					<TabsPanel value="others">
-						<p className="text-pretty text-muted-foreground">
+					<TabsPanel className="mt-4" value="others">
+						<p className="max-w-[56ch] rounded-xl border bg-card p-6 text-lg sm:p-8">
 							<Rich text={install.othersText} />
 						</p>
 					</TabsPanel>
 				</Tabs>
-			</section>
+			</Section>
 		</>
 	);
 }

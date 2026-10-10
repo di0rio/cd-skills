@@ -331,27 +331,63 @@ html[data-pending] main {
 	}
 }
 
-/* Entrada escalonada da lista: o atraso vem de --i, em passos de 40ms. Só opacidade e 4px pra cima, como
-   transição com @starting-style (não animação com `fill: both`): o estado normal do item é visível, então se
-   a entrada não rodar (troca de página interrompida, aba em segundo plano) ele aparece mesmo assim. */
-@utility rise {
-	transition:
-		opacity 250ms var(--cd-ease-out) calc(var(--i, 0) * 40ms),
-		translate 250ms var(--cd-ease-out) calc(var(--i, 0) * 40ms);
-	@starting-style {
-		opacity: 0;
-		translate: 0 4px;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		transition: opacity 150ms ease;
-		@starting-style {
-			translate: 0 0;
-		}
-	}
-}
-
 @layer components {
 	.markdown img {
 		@apply max-w-full rounded-lg border;
+	}
+}
+
+/* Largura do site: uma coluna larga e centrada, com a mesma margem lateral em todo lugar. */
+@utility wrap {
+	margin-inline: auto;
+	width: 100%;
+	max-width: 1200px;
+	padding-inline: 1.25rem;
+	@media (min-width: 640px) {
+		padding-inline: 2rem;
+	}
+}
+
+/* Tipo de exibição: mono pesado e apertado, igual em todo título grande. */
+@utility display {
+	font-family: var(--font-mono);
+	font-weight: 700;
+	letter-spacing: -0.045em;
+	line-height: 0.98;
+	overflow-wrap: break-word;
+}
+
+/* Linha da skill na home: uma linha fina amarela corre pela borda de cima, o número e a seta acompanham. */
+.row-line {
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 300ms var(--cd-ease-out);
+}
+.row-index,
+.row-arrow {
+	transition:
+		color 200ms ease,
+		transform 200ms var(--cd-ease-out);
+}
+.row:focus-within .row-line,
+.row:has(a:focus-visible) .row-line {
+	transform: scaleX(1);
+}
+@media (hover: hover) and (pointer: fine) {
+	.row:hover .row-line {
+		transform: scaleX(1);
+	}
+	.row:hover .row-index {
+		color: var(--brand-foreground);
+	}
+	.row:hover .row-arrow {
+		transform: translateX(4px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.row-line,
+	.row-index,
+	.row-arrow {
+		transition: none;
 	}
 }
