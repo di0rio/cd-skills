@@ -725,3 +725,31 @@ body {
 		scale: 1;
 	}
 }
+
+.win {
+	outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.dock-icon:hover {
+		transform: none;
+	}
+}
+/* Sem transparência: o dock vira um bloco sólido, sem desfoque. */
+@media (prefers-reduced-transparency: reduce) {
+	.dock {
+		background: var(--chrome);
+		backdrop-filter: none;
+	}
+}
+/* Mais contraste: bordas mais marcadas na janela, nas abas e no dock. */
+@media (prefers-contrast: more) {
+	.win,
+	.dock {
+		outline: 1px solid var(--foreground);
+		outline-offset: -1px;
+	}
+	.dock {
+		background: var(--chrome);
+		backdrop-filter: none;
+	}
+}

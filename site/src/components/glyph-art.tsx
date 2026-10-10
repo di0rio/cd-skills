@@ -243,7 +243,8 @@ export function GlyphArt({ pool }: { pool: string }) {
 			frame = timer = 0;
 		};
 		const flicker = () => {
-			if (!grid) return;
+			// Janela minimizada ou fechada (inert): nada pra animar.
+			if (!grid || el.closest("[inert]")) return;
 			const now = performance.now();
 			for (const [k, until] of flickering)
 				if (now > until) {
