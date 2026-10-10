@@ -39,7 +39,7 @@ export default async function Home() {
 	};
 	// Texto das próprias skills: é com ele que o `cd/` do hero é desenhado.
 	const pool = skills
-		.map(({ source }) => source.replace(/[^!-~]/g, "").slice(0, 700))
+		.map(({ source }) => source.replace(/[^!-~]/g, "").slice(0, 1600))
 		.join("");
 	const steps = [
 		[how.step1, how.text1],
@@ -83,11 +83,11 @@ export default async function Home() {
 						</Button>
 					</div>
 				</div>
-				<div className="hero-art relative mx-auto mb-10 aspect-[2/1] w-full max-w-[36rem]">
+				<div className="hero-art relative mx-auto mb-28 aspect-[2/1] w-full max-w-[36rem]">
 					<GlyphArt pool={pool} />
 					<Avatar
 						alt={hero.avatar}
-						className="absolute right-2 -bottom-12 size-24 sm:size-28"
+						className="absolute top-full left-1 mt-5 size-24 sm:size-28"
 					/>
 				</div>
 			</section>
@@ -114,14 +114,14 @@ export default async function Home() {
 										aria-hidden="true"
 										className="row-line absolute inset-x-0 -top-px h-px bg-brand"
 									/>
-									<div className="grid items-start gap-x-8 gap-y-6 py-8 sm:py-10 lg:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,25rem)_5rem]">
+									<div className="grid items-start gap-x-8 gap-y-6 py-8 sm:py-10 xl:grid-cols-[4.5rem_minmax(0,1fr)_22rem_5rem]">
 										<span className="row-index font-bold font-mono text-[2.5rem] text-muted-foreground leading-none tabular-nums sm:text-[3.25rem]">
 											{pad(i + 1)}
 										</span>
 										<div className="min-w-0">
-											<h3 className="font-bold font-mono text-[clamp(1.75rem,3.4vw,2.75rem)] leading-tight tracking-[-0.03em]">
+											<h3 className="font-bold font-mono text-[clamp(1.75rem,3.1vw,2.5rem)] leading-tight tracking-[-0.03em]">
 												<Link
-													className="break-words outline-none after:absolute after:inset-0"
+													className="whitespace-nowrap outline-none after:absolute after:inset-0"
 													href={localePath(locale, `/${skill.slug}`)}
 												>
 													{skill.name}
@@ -144,7 +144,7 @@ export default async function Home() {
 										)}
 										<span
 											aria-hidden="true"
-											className="row-open hidden justify-self-end font-mono text-muted-foreground lg:block"
+											className="row-open hidden justify-self-end font-mono text-muted-foreground xl:block"
 										>
 											{copy.skills.open}{" "}
 											<span className="row-arrow inline-block">→</span>
