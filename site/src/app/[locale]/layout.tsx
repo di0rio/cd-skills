@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Ubuntu, Ubuntu_Mono } from "next/font/google";
-import { ViewTransition } from "react";
 import "../globals.css";
 import { GithubLink } from "@/components/site-shell/github-link";
 import { LocaleSwitch } from "@/components/site-shell/locale-switch";
@@ -41,6 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
+// Aplica o tema antes do primeiro paint (evita o flash claro ao abrir em dark ou trocar de idioma).
+const themeBoot = `try{var t=localStorage.getItem("theme"),d=t==="dark"||((!t||t==="system")&&matchMedia("(prefers-color-scheme:dark)").matches),e=document.documentElement;e.classList.toggle("dark",d);e.style.colorScheme=d?"dark":"light"}catch(e){}`;
+
 const footerLink =
 	"rounded-sm underline decoration-muted-foreground/40 underline-offset-4 hover:text-foreground hover:decoration-brand";
 
@@ -68,6 +70,12 @@ export default async function RootLayout({
 			lang={locale}
 			suppressHydrationWarning
 		>
+			<head>
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: constante nossa, sem entrada do usuário
+					dangerouslySetInnerHTML={{ __html: themeBoot }}
+				/>
+			</head>
 			<body className="bg-desktop text-[16px] text-foreground leading-[1.65]">
 				<ThemeProvider>
 					<TooltipProvider>
@@ -99,21 +107,17 @@ export default async function RootLayout({
 								zoom: shell.window.zoom,
 								unzoom: shell.window.unzoom,
 								open: shell.window.open,
-								desktop: shell.window.desktop,
 								hint: shell.window.hint,
 							}}
 							tabs={tabs}
 						>
-							{/* Trocar de página anima só o conteúdo; a janela e o rodapé ficam parados. */}
-							<ViewTransition default="page">
-								<main
-									className="flex min-w-0 flex-col outline-none"
-									id="conteudo"
-									tabIndex={-1}
-								>
-									{children}
-								</main>
-							</ViewTransition>
+							<main
+								className="flex min-w-0 flex-col outline-none"
+								id="conteudo"
+								tabIndex={-1}
+							>
+								{children}
+							</main>
 
 							<footer className="mt-28 border-t sm:mt-40">
 								<div className="wrap flex flex-col gap-10 py-14 sm:py-20">

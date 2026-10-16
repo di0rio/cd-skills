@@ -1,10 +1,10 @@
 {
 	"tagline": {
-		"pt": "vídeo de demo curto, com um fluxo só, que termina no resultado.",
+		"pt": "vídeos curtos de demonstração, cada um mostrando um fluxo até o resultado.",
 		"en": "short demo videos that follow one flow and end on the result."
 	},
 	"headline": {
-		"pt": "um fluxo, 45 segundos, o resultado no fim.",
+		"pt": "um fluxo de produto em um vídeo de 45 segundos.",
 		"en": "one flow, 45 seconds, the result at the end."
 	},
 	"idea": {
@@ -19,7 +19,7 @@
 			"en": "45s, one flow: search → component → block"
 		},
 		"caption": {
-			"pt": "O vídeo do cd/ui antes e depois da skill. O antigo pulava de componente em componente sem explicar nenhum. O novo vai do Ctrl K até o bloco pronto e para ali.",
+			"pt": "O vídeo do cd/ui antes e depois da skill. O antigo passava por vários componentes sem explicar como se conectavam. O novo mostra a busca no Ctrl K e a montagem do bloco.",
 			"en": "The cd/ui video before and after the skill. The old one jumped from component to component without explaining any of them. The new one goes from Ctrl K to a finished block and stops there."
 		}
 	},
@@ -72,7 +72,7 @@
 			{
 				"term": "manual",
 				"text": {
-					"pt": "você grava no Recordly seguindo o roteiro. Serve quando o fluxo usa janela do sistema, como o seletor de arquivo.",
+			"pt": "você grava no Recordly seguindo o roteiro. Esse modo serve para fluxos que usam janelas do sistema, como o seletor de arquivos.",
 					"en": "you record in Recordly from the shot list. For flows that use system windows, like the file picker."
 				}
 			}

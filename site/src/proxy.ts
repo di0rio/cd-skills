@@ -7,7 +7,9 @@ export function proxy(request: NextRequest) {
 	if (/^\/en(\/|$)/.test(pathname)) return NextResponse.next();
 
 	// /pt/... é só a versão interna; quem digitar vai pra URL sem prefixo.
+	// Exceção: o Next aponta a og:image das skills pra /pt/.../opengraph-image; passa direto pra não virar redirect pro crawler.
 	if (/^\/pt(\/|$)/.test(pathname)) {
+		if (pathname.endsWith("/opengraph-image")) return NextResponse.next();
 		const url = request.nextUrl.clone();
 		url.pathname = pathname.slice(3) || "/";
 		return NextResponse.redirect(url, 308);

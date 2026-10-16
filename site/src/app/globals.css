@@ -317,36 +317,6 @@ html[data-pending] main {
 	opacity: 0.6;
 }
 
-/* Navegar entre páginas: a página em si não faz crossfade, só o <main> (120ms, sem deslocar nem atrasar). */
-::view-transition-old(root),
-::view-transition-new(root) {
-	animation: none;
-}
-::view-transition-group(.page) {
-	animation: none;
-}
-::view-transition-old(.page) {
-	animation: vt-out 120ms ease-out both;
-}
-::view-transition-new(.page) {
-	animation: vt-fade 120ms ease-out both;
-}
-@keyframes vt-out {
-	to {
-		opacity: 0;
-	}
-}
-@keyframes vt-fade {
-	from {
-		opacity: 0;
-	}
-}
-@media (prefers-reduced-motion: reduce) {
-	::view-transition-new(.page) {
-		animation: vt-fade 160ms ease both;
-	}
-}
-
 @layer components {
 	.markdown img {
 		@apply max-w-full rounded-lg border;
@@ -549,10 +519,10 @@ body {
 	opacity: 0.025;
 }
 .win {
-	--win-w: min(1180px, 100vw - 64px);
+	--win-w: min(1440px, 100vw - 48px);
 	--win-l: calc((100vw - var(--win-w)) / 2);
-	--win-t: 32px;
-	--win-h: calc(100dvh - 64px);
+	--win-t: 24px;
+	--win-h: calc(100dvh - 48px);
 	--win-r: 12px;
 	position: fixed;
 	z-index: 10;
@@ -594,8 +564,141 @@ body {
 	overscroll-behavior: contain;
 	scroll-padding-top: 1rem;
 }
+/* Abas no estilo do Chrome: 34px, encolhem juntas (72 a 240px), a ativa emenda na barra de baixo com "pés" curvos e
+   as inativas ficam lisas, separadas por um traço que some perto da aba ativa ou sob o mouse. */
+.tab-item {
+	position: relative;
+	flex: 0 1 240px;
+	min-width: 72px;
+}
+.tab-item:not(:last-child)::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	top: 50%;
+	height: 16px;
+	width: 1px;
+	translate: 0 -50%;
+	background: var(--border);
+	pointer-events: none;
+	transition: opacity 120ms ease;
+}
+.tab-item:has([aria-current])::after,
+.tab-item:has(+ .tab-item [aria-current])::after,
+.tab-item:hover::after,
+.tab-item:has(+ .tab-item:hover)::after {
+	opacity: 0;
+}
+.tab {
+	position: relative;
+	display: flex;
+	height: 34px;
+	align-items: center;
+	gap: 8px;
+	padding: 0 12px;
+	border-radius: 10px 10px 0 0;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--muted-foreground);
+	outline: none;
+	transition: color 120ms ease;
+}
+.tab:focus-visible {
+	box-shadow: inset 0 0 0 2px var(--ring);
+}
+.tab-pill {
+	position: absolute;
+	inset: 3px 2px;
+	border-radius: 8px;
+	background: var(--foreground);
+	opacity: 0;
+	transition: opacity 120ms ease;
+}
+.tab-title {
+	position: relative;
+	min-width: 0;
+	flex: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	mask-image: linear-gradient(90deg, #000 calc(100% - 18px), transparent);
+}
+.tab-close {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	padding: 3px;
+	translate: 0 -50%;
+	border-radius: 999px;
+	opacity: 0;
+	transition: opacity 120ms ease;
+}
+.tab[aria-current] {
+	z-index: 1;
+	background: var(--chrome);
+	color: var(--foreground);
+}
+/* Os pés: um quadrado de 10px com um círculo recortado, na cor da aba, colado nos cantos de baixo. */
+.tab[aria-current]::before,
+.tab[aria-current]::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	width: 10px;
+	height: 10px;
+}
+.tab[aria-current]::before {
+	left: -10px;
+	background: radial-gradient(
+		circle at 0 0,
+		transparent 9.5px,
+		var(--chrome) 10px
+	);
+}
+.tab[aria-current]::after {
+	right: -10px;
+	background: radial-gradient(
+		circle at 100% 0,
+		transparent 9.5px,
+		var(--chrome) 10px
+	);
+}
+.tab[aria-current] .tab-close {
+	opacity: 0.7;
+}
+@media (hover: hover) and (pointer: fine) {
+	.tab:not([aria-current]):hover {
+		color: var(--foreground);
+	}
+	.tab:not([aria-current]):hover .tab-pill {
+		opacity: 0.07;
+	}
+	.tab:hover .tab-close {
+		opacity: 0.7;
+	}
+}
+.tab-new {
+	display: flex;
+	width: 28px;
+	height: 28px;
+	margin: 0 0 3px 4px;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	color: var(--muted-foreground);
+	pointer-events: none;
+}
+.tab-new svg {
+	width: 16px;
+	height: 16px;
+}
+
 /* Abas com borda esmaecida quando tem mais pra rolar. */
 .tabs-scroll {
+	/* Os itens têm largura própria (240px); sem isso o flex mediria só o texto e as abas nunca chegariam ao máximo. */
+	flex: 0 1 calc(var(--tabs) * 240px + 20px);
 	overflow-x: auto;
 	scrollbar-width: none;
 	--fade-l: 0px;
@@ -618,7 +721,7 @@ body {
 	--fade-r: 28px;
 }
 
-/* Dock e ícone da mesa: aparecem quando a janela está minimizada ou fechada. O dock é um material translúcido. */
+/* Dock: aparece quando a janela está minimizada ou fechada e é o único jeito de reabrir. O dock é um material translúcido. */
 .dock {
 	position: fixed;
 	z-index: 20;
@@ -654,13 +757,11 @@ body {
 	outline: none;
 	transition: transform 160ms var(--cd-ease-out);
 }
-.dock-icon:focus-visible,
-.desktop-icon:focus-visible {
+.dock-icon:focus-visible {
 	outline: 2px solid var(--ring);
 	outline-offset: 3px;
 }
-.dock-icon:active,
-.desktop-icon:active {
+.dock-icon:active {
 	transform: scale(0.96);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -684,42 +785,11 @@ body {
 .dock-hint[data-show] {
 	opacity: 1;
 }
-.desktop-icon {
-	position: fixed;
-	z-index: 5;
-	top: 24px;
-	right: 24px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 6px;
-	padding: 6px;
-	border-radius: 14px;
-	font-family: var(--font-mono);
-	font-size: 12px;
-	color: var(--foreground);
-	opacity: 0;
-	scale: 0.92;
-	visibility: hidden;
-	pointer-events: none;
-	transition:
-		opacity 250ms var(--cd-ease-out),
-		scale 250ms var(--cd-ease-out),
-		visibility 0s 250ms;
-}
-.desktop-icon[data-show] {
-	opacity: 1;
-	scale: 1;
-	visibility: visible;
-	pointer-events: auto;
-	transition-delay: 0s;
-}
 .win[data-parked] {
 	visibility: hidden;
 }
 @media (prefers-reduced-motion: reduce) {
 	.dock,
-	.desktop-icon,
 	.dock-hint {
 		transition: opacity 150ms ease;
 		scale: 1;
@@ -752,4 +822,129 @@ body {
 		background: var(--chrome);
 		backdrop-filter: none;
 	}
+}
+
+/* ---- Moldura técnica ----
+   Linhas finas e "+" nos cantos (`.xh`), como numa folha de projeto. Só decoração: sem movimento, sem custo. */
+.xh {
+	position: absolute;
+	width: 11px;
+	height: 11px;
+	pointer-events: none;
+	color: var(--muted-foreground);
+	background:
+		linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat,
+		linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+}
+/* Malha de fundo do hero: some nas bordas pra não virar parede. */
+.grid-bg {
+	background-image:
+		linear-gradient(var(--border) 1px, transparent 1px),
+		linear-gradient(90deg, var(--border) 1px, transparent 1px);
+	background-size: 64px 64px;
+	background-position: center top;
+	mask-image: radial-gradient(
+		ellipse 70% 80% at 50% 25%,
+		#000 20%,
+		transparent 75%
+	);
+}
+
+/* Riscado do passo a passo: a linha cresce da esquerda (transform) quando o passo marca o trecho. */
+.a-x {
+	position: relative;
+	display: inline-block;
+	max-width: 100%;
+	vertical-align: top;
+}
+.a-x::after {
+	content: "";
+	position: absolute;
+	inset: 50% 0 auto;
+	height: 1px;
+	background: currentColor;
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 400ms var(--cd-ease-out);
+}
+.a-x[data-on]::after {
+	transform: scaleX(1);
+}
+
+/* Ilustrações dos cards: o estado normal é o final (já riscado, já reescrito). Dentro de `[data-live]`
+   (card na tela, aba visível) elas tocam uma vez a partir do começo; saiu da tela, o atributo some e elas voltam
+   ao estado final. Só transform e opacity. */
+@keyframes art-from-full {
+	from {
+		opacity: 1;
+	}
+}
+@keyframes art-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+@keyframes art-in {
+	from {
+		opacity: 0;
+		translate: 0 6px;
+	}
+}
+@keyframes art-grow {
+	from {
+		transform: scaleX(0);
+	}
+}
+@keyframes art-blink {
+	50% {
+		opacity: 0.2;
+	}
+}
+@keyframes art-cursor {
+	from {
+		translate: 8cqw 14cqw;
+	}
+	35% {
+		translate: 46cqw 10cqw;
+	}
+	70% {
+		translate: 24cqw 22cqw;
+	}
+	to {
+		translate: 62cqw 16cqw;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	[data-live] .a-dim {
+		animation: art-from-full 300ms ease calc(500ms + var(--i, 0) * 130ms) both;
+	}
+	[data-live] .a-x::after {
+		animation: art-grow 420ms var(--cd-ease-out)
+			calc(500ms + var(--i, 0) * 130ms) both;
+		transition: none;
+	}
+	[data-live] .a-show {
+		animation: art-in 420ms var(--cd-ease-out) 1500ms both;
+	}
+	[data-live] .a-before {
+		animation: art-out 300ms ease 1700ms both;
+	}
+	[data-live] .a-after {
+		animation: art-in 420ms var(--cd-ease-out) 1900ms both;
+	}
+	[data-live] .a-rec {
+		animation: art-blink 1.2s ease-in-out infinite;
+	}
+	[data-live] .a-fill {
+		animation: art-grow 3s linear both;
+	}
+	[data-live] .a-cursor {
+		animation: art-cursor 3s var(--cd-ease-in-out) both;
+	}
+}
+html[data-motion-paused] .a-x::after {
+	transition: none;
 }

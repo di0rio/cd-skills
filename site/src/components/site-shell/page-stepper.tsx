@@ -67,7 +67,9 @@ export function PageStepper({ label, current, total, prev, next }: Props) {
 			if (e.defaultPrevented) return;
 			if (
 				e.target instanceof Element &&
-				e.target.closest("input, textarea, select, [contenteditable]")
+				e.target.closest(
+					"input, textarea, select, [contenteditable], [role=tablist], [role=tab], [role=slider], [role=listbox], [data-no-stepper]",
+				)
 			)
 				return;
 			if (document.querySelector('[role="dialog"]:not([data-terminal])'))

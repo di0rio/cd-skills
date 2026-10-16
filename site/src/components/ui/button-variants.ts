@@ -3,8 +3,8 @@ import { cva } from "class-variance-authority";
 export const buttonVariants = cva(
 	[
 		"relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-(--radius-button) border font-medium outline-none",
-		// Click feedback: sinks 3% (the `key` variant drops 2px) fast, all on the instant duration.
-		"transition-[color,background-color,border-color,box-shadow,transform,translate,scale] duration-instant ease-out motion-safe:active:scale-[0.97]",
+		// Click feedback: sinks 2% (the `key` variant drops 2px) fast, all on the instant duration.
+		"transition-[color,background-color,border-color,box-shadow,transform,translate,scale] duration-instant ease-out motion-safe:active:scale-[0.98]",
 		"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
 		"data-disabled:pointer-events-none data-disabled:opacity-50 data-loading:opacity-100",
 		"[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",

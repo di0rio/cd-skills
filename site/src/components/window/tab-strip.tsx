@@ -1,8 +1,10 @@
 "use client";
 
+import { PlusIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { stripLocale } from "@/i18n/path";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +15,28 @@ export type Tab = {
 	label: string;
 };
 
-/** Uma aba por página: a home primeiro, depois cada skill. Links de verdade; a aba ativa tem a cor da barra de baixo. */
+/**
+ * Uma aba por página, no estilo do Chrome: a home primeiro, depois cada skill. Links de verdade; a aba ativa tem a
+ * cor da barra de baixo e os "pés" curvos que a emendam nela. A aba fica ativa já no pointerdown (otimista) e
+ * todas as rotas são pré-carregadas, então trocar de aba não espera a rede. O × e o + são só enfeite (nada pra
+ * fechar ou abrir), por isso ficam escondidos do teclado e do leitor de tela.
+ */
 export function TabStrip({ tabs, label }: { tabs: Tab[]; label: string }) {
-	const current = stripLocale(usePathname() ?? "/");
+	const router = useRouter();
+	const pathname = stripLocale(usePathname() ?? "/");
+	/** Aba tocada que a URL ainda não alcançou (vale só enquanto a URL é a de antes do toque). */
+	const [touched, setTouched] = useState<{ id: string; from: string } | null>(
+		null,
+	);
+	const clicked = useRef(false);
 	const scroller = useRef<HTMLUListElement>(null);
+	const current = touched?.from === pathname ? touched.id : pathname;
+	const touch = (id: string) => setTouched({ id, from: pathname });
+
+	// Pré-carrega todas as abas (no dev o Next ignora).
+	useEffect(() => {
+		for (const tab of tabs) router.prefetch(tab.href);
+	}, [tabs, router]);
 
 	// Borda esmaecida só do lado que ainda tem aba escondida; a aba ativa sempre aparece.
 	useEffect(() => {
@@ -44,37 +64,70 @@ export function TabStrip({ tabs, label }: { tabs: Tab[]; label: string }) {
 	}, []);
 
 	return (
-		<nav aria-label={label} className="min-w-0 self-end">
-			<ul className="tabs-scroll flex items-end gap-0.5" ref={scroller}>
+		<nav aria-label={label} className="flex min-w-0 flex-1 items-end self-end">
+			<ul
+				className="tabs-scroll flex min-w-0 items-end px-2.5"
+				ref={scroller}
+				style={{ "--tabs": tabs.length } as CSSProperties}
+			>
 				{tabs.map((tab) => {
 					const active = tab.id === current;
 					return (
-						<li className="shrink-0" key={tab.id}>
+						<li className="tab-item" key={tab.id}>
 							<Link
 								aria-current={active ? "page" : undefined}
-								className={cn(
-									"flex h-[34px] w-[9.5rem] items-center gap-2 rounded-t-lg px-3 font-mono text-[13px] outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset",
-									active
-										? "bg-chrome text-foreground"
-										: "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
-								)}
+								className="tab"
 								href={tab.href}
+								onClick={() => {
+									clicked.current = true;
+									touch(tab.id);
+								}}
+								onPointerDown={(event) => {
+									if (
+										event.button !== 0 ||
+										event.ctrlKey ||
+										event.metaKey ||
+										event.shiftKey ||
+										event.altKey
+									)
+										return;
+									clicked.current = false;
+									touch(tab.id);
+								}}
+								onPointerLeave={() => {
+									if (!clicked.current) setTouched(null);
+								}}
+								prefetch
 							>
-								<span
-									aria-hidden="true"
-									className={cn(
-										"size-2 shrink-0 rounded-full",
-										active || tab.id === "/"
-											? "bg-brand"
-											: "bg-muted-foreground/50",
-									)}
-								/>
-								<span className="truncate">{tab.label}</span>
+								<span aria-hidden="true" className="tab-pill" />
+								{tab.id === "/" ? (
+									<Image
+										alt=""
+										className="relative size-4 shrink-0 rounded-[3px]"
+										height={16}
+										src="/icon.svg"
+										unoptimized
+										width={16}
+									/>
+								) : (
+									<span
+										aria-hidden="true"
+										className={cn(
+											"relative size-2.5 shrink-0 rounded-full",
+											active ? "bg-brand" : "bg-muted-foreground/50",
+										)}
+									/>
+								)}
+								<span className="tab-title">{tab.label}</span>
+								<XIcon aria-hidden="true" className="tab-close" />
 							</Link>
 						</li>
 					);
 				})}
 			</ul>
+			<span aria-hidden="true" className="tab-new">
+				<PlusIcon />
+			</span>
 		</nav>
 	);
 }

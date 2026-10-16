@@ -1,10 +1,10 @@
 {
 	"tagline": {
-		"pt": "a menor mudança correta, segura e legível que cabe no projeto.",
+		"pt": "a menor mudança que resolve o problema com segurança e segue o projeto.",
 		"en": "the smallest correct, safe and readable change that fits the project."
 	},
 	"headline": {
-		"pt": "o menor código que resolve certo.",
+		"pt": "código direto para resolver o problema com segurança.",
 		"en": "the smallest code that solves it right."
 	},
 	"idea": {
@@ -22,14 +22,14 @@
 			["+", "const total = items.reduce((sum, item) => sum + item.price, 0)"]
 		],
 		"caption": {
-			"pt": "Faz a mesma coisa sem uma interface e uma classe pra um cálculo que só aparece aqui. Encurtar nunca vale tirar validação, tratamento de erro ou acessibilidade.",
+			"pt": "O cálculo continua igual, sem uma interface e uma classe usadas só aqui. Reduzir código não justifica remover validações, tratamento de erros ou recursos de acessibilidade.",
 			"en": "Same result, without an interface and a class for a sum that only happens here. Shorter is never worth dropping validation, error handling or accessibility."
 		}
 	},
 	"list": {
 		"title": { "pt": "a escada", "en": "the ladder" },
 		"intro": {
-			"pt": "Para no primeiro degrau que resolve certo.",
+			"pt": "Pare na primeira opção que resolva o problema corretamente.",
 			"en": "Stop at the first rung that solves it correctly."
 		},
 		"items": [
@@ -68,7 +68,7 @@
 			{ "value": "166/200", "label": { "pt": "ponytail", "en": "ponytail" } }
 		],
 		"caption": {
-			"pt": "5 tarefas pequenas que eu escrevi, avaliadas às cegas por outro modelo. Rodei cada versão uma vez só, então serve de termômetro, não de prova.",
+			"pt": "Escrevi cinco tarefas pequenas e pedi a outro modelo que avaliasse as respostas sem saber qual versão tinha usado a skill. Cada versão foi executada uma vez, então os resultados são uma referência inicial.",
 			"en": "5 small tasks I wrote, graded blind by another model. Each version ran once, so read it as a rough check, not proof."
 		},
 		"link": {

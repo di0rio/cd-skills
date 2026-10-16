@@ -3,161 +3,27 @@ import type { Locale } from "@/i18n/generated";
 import { type Idea, pick, type SkillContent, type Text } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { Rich } from "./rich";
+import type { WalkItem } from "./walkthrough";
 
-type Labels = { removed: string; added: string; before: string; after: string };
-type Row = readonly ["-" | "+", string];
-
-/** Linhas de um diff: removida apagada e riscada, adicionada com o `+` amarelo. O sinal vai em texto pra leitor de tela. */
-function DiffLines({
-	rows,
-	labels,
-	clamp,
-}: {
-	rows: readonly Row[];
-	labels: Labels;
-	clamp?: boolean;
-}) {
-	return rows.map(([sign, line]) => {
-		const removed = sign === "-";
-		const Tag = removed ? "del" : "ins";
-		return (
-			<Tag
-				className={cn(
-					"flex px-4 no-underline",
-					removed &&
-						"text-muted-foreground line-through decoration-muted-foreground/50",
-				)}
-				key={`${sign}${line}`}
-			>
-				<span className="sr-only">
-					{removed ? labels.removed : labels.added}:{" "}
-				</span>
-				<span
-					aria-hidden="true"
-					className={cn(
-						"w-4 shrink-0 select-none no-underline",
-						!removed && "text-brand-foreground",
-					)}
-				>
-					{sign}
-				</span>
-				<span className={cn(clamp ? "truncate" : "whitespace-pre")}>
-					{line}
-				</span>
-			</Tag>
-		);
-	});
-}
-
-/** O diff como cartão de código de verdade: nome do arquivo, contador e as linhas. */
-export function DiffCard({
-	idea,
-	locale,
-	labels,
-}: {
-	idea: Idea;
-	locale: Locale;
-	labels: Labels;
-}) {
-	return (
-		<figure data-reveal>
-			<div className="overflow-hidden rounded-xl border bg-card">
-				<div className="flex items-center justify-between border-b px-4 py-2 font-mono text-muted-foreground text-xs">
-					<span>{idea.file}</span>
-					<span className="tabular-nums">{idea.counter}</span>
-				</div>
-				<pre className="overflow-x-auto py-4 text-[13px] leading-relaxed sm:text-[15px]">
-					<code className="block w-max min-w-full">
-						<DiffLines labels={labels} rows={idea.lines} />
-					</code>
-				</pre>
-			</div>
-			<Caption locale={locale} text={idea.caption} />
-		</figure>
-	);
-}
-
-/** Antes e depois lado a lado: o antes apagado, o depois com a linha amarela. */
-export function BeforeAfter({
-	idea,
-	locale,
-	labels,
-}: {
-	idea: Idea;
-	locale: Locale;
-	labels: Labels;
-}) {
-	if (!idea.before || !idea.after) return null;
-	return (
-		<figure data-reveal>
-			<div className="grid gap-4 md:grid-cols-2">
-				<div className="rounded-xl border bg-card p-5 sm:p-6">
-					<p className="font-mono text-muted-foreground text-xs uppercase tracking-[0.18em]">
-						{labels.before}
-					</p>
-					<p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-						{pick(idea.before, locale)}
-					</p>
-				</div>
-				<div className="rounded-xl border border-brand-foreground/60 bg-card p-5 sm:p-6">
-					<p className="font-mono text-brand-foreground text-xs uppercase tracking-[0.18em]">
-						{labels.after}
-					</p>
-					<p className="mt-4 text-lg leading-relaxed">
-						{pick(idea.after, locale)}
-					</p>
-				</div>
-			</div>
-			<Caption locale={locale} text={idea.caption} />
-		</figure>
-	);
-}
-
-function Caption({ text, locale }: { text: Text; locale: Locale }) {
-	return (
-		<figcaption className="mt-5 max-w-[62ch] text-muted-foreground">
-			{pick(text, locale)}
-		</figcaption>
-	);
-}
-
-export function IdeaBlock(props: {
-	idea: Idea;
-	locale: Locale;
-	labels: Labels;
-}) {
-	return props.idea.kind === "diff" ? (
-		<DiffCard {...props} />
-	) : (
-		<BeforeAfter {...props} />
-	);
-}
-
-/** Versão compacta da ideia pra linha da skill na home: no máximo 3 linhas, cada uma cortada em uma. */
-export function MiniDemo({
-	idea,
-	locale,
-	labels,
-}: {
-	idea: Idea;
-	locale: Locale;
-	labels: Labels;
-}) {
-	const rows: Row[] =
-		idea.kind === "diff"
-			? [
-					...idea.lines.filter(([sign]) => sign === "-").slice(0, 2),
-					...idea.lines.filter(([sign]) => sign === "+").slice(0, 1),
-				]
+/** A `idea` de uma skill vira o exemplo do passo a passo: o diff como está, ou o antes (sai) e o depois (fica). */
+export function walkItem(
+	skill: { slug: string; name: string },
+	idea: Idea,
+	locale: Locale,
+): WalkItem {
+	const code = idea.kind === "diff";
+	return {
+		slug: skill.slug,
+		name: skill.name,
+		title: (code && idea.file) || skill.name,
+		code,
+		lines: code
+			? idea.lines
 			: [
 					["-", pick(idea.before ?? { pt: "" }, locale)],
 					["+", pick(idea.after ?? { pt: "" }, locale)],
-				];
-	return (
-		<div className="min-w-0 overflow-hidden rounded-lg border bg-card py-3 font-mono text-[13px] leading-relaxed">
-			<DiffLines clamp labels={labels} rows={rows} />
-		</div>
-	);
+				],
+	};
 }
 
 export function Ladder({ items, locale }: { items: Text[]; locale: Locale }) {

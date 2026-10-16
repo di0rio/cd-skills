@@ -29,10 +29,21 @@ export function Section({
 			id={id}
 		>
 			<div className="wrap">
-				<div className="grid gap-x-14 gap-y-6 border-t pt-8 md:grid-cols-[150px_minmax(0,1fr)]">
+				<div className="relative grid gap-x-14 gap-y-6 border-t pt-8 md:grid-cols-[150px_minmax(0,1fr)]">
+					<i
+						aria-hidden="true"
+						className="xh top-0 left-0 -translate-x-1/2 -translate-y-1/2"
+					/>
+					<i
+						aria-hidden="true"
+						className="xh top-0 right-0 translate-x-1/2 -translate-y-1/2"
+					/>
 					<p className="font-mono text-muted-foreground text-xs uppercase tracking-[0.18em]">
 						<span className="text-brand-foreground tabular-nums">{pad(n)}</span>
-						<span className="mt-1 block">{label}</span>
+						<span className="mt-1 block">
+							{"// "}
+							{label}
+						</span>
 					</p>
 					<div className="min-w-0">
 						<h2

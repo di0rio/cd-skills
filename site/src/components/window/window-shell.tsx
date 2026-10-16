@@ -25,7 +25,6 @@ type Labels = {
 	zoom: string;
 	unzoom: string;
 	open: string;
-	desktop: string;
 	hint: string;
 };
 
@@ -93,7 +92,6 @@ export function WindowShell({
 	const win = useRef<HTMLDivElement>(null);
 	const closeButton = useRef<HTMLButtonElement>(null);
 	const dockIcon = useRef<HTMLButtonElement>(null);
-	const desktopIcon = useRef<HTMLButtonElement>(null);
 	const titleBar = useRef<HTMLDivElement>(null);
 	const running = useRef<Animation>(undefined);
 	const previous = useRef<Mode>("open");
@@ -111,12 +109,7 @@ export function WindowShell({
 		const was = previous.current;
 		previous.current = mode;
 		if (was === mode) return;
-		const target =
-			mode === "minimized"
-				? dockIcon.current
-				: mode === "closed"
-					? desktopIcon.current
-					: win.current;
+		const target = mode === "open" ? win.current : dockIcon.current;
 		target?.focus({ preventScroll: true });
 	}, [mode]);
 
@@ -292,7 +285,7 @@ export function WindowShell({
 				tabIndex={-1}
 			>
 				<div
-					className="flex shrink-0 items-end gap-4 bg-chrome-bar pt-2 pl-3.5"
+					className="flex shrink-0 items-end gap-4 bg-chrome-bar pt-2 pr-3 pl-3.5"
 					ref={titleBar}
 				>
 					<div className="mb-3 self-end">
@@ -328,22 +321,10 @@ export function WindowShell({
 			<p
 				aria-live="polite"
 				className="dock-hint"
-				data-show={mode === "minimized" || undefined}
+				data-show={mode !== "open" || undefined}
 			>
-				{mode === "minimized" ? labels.hint : ""}
+				{mode !== "open" ? labels.hint : ""}
 			</p>
-			<button
-				aria-label={labels.open}
-				className="desktop-icon"
-				data-show={mode === "closed" || undefined}
-				onClick={restore}
-				ref={desktopIcon}
-				tabIndex={mode === "closed" ? 0 : -1}
-				type="button"
-			>
-				<AppIcon className="size-16" />
-				<span>{labels.desktop}</span>
-			</button>
 		</>
 	);
 }

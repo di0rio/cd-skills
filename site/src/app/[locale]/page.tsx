@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Avatar } from "@/components/avatar";
-import { CommandLine } from "@/components/command-line";
+import { BenchTable, readBench } from "@/components/bench";
+import { Corners } from "@/components/corners";
+import { CtaBand } from "@/components/cta-band";
 import { Decode } from "@/components/decode";
 import { GlyphArt } from "@/components/glyph-art";
+import { InstallPanel } from "@/components/install-panel";
 import { Rich } from "@/components/rich";
 import { Section } from "@/components/section";
-import { MiniDemo } from "@/components/skill-blocks";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
-import { localePath } from "@/i18n/path";
+import { walkItem } from "@/components/skill-blocks";
+import { SkillCard } from "@/components/skill-card";
+import { Walkthrough } from "@/components/walkthrough";
 import { alternates, getT } from "@/i18n/server";
-import { content, pick } from "@/lib/content";
+import { content } from "@/lib/content";
 import { site } from "@/lib/site";
-import { firstSentence, installAll, installOne, skills } from "@/lib/skills";
+import { installAll, installOne, skills } from "@/lib/skills";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const { t, locale } = await getT();
@@ -29,13 +30,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export default async function Home() {
 	const { t, locale } = await getT();
 	const copy = t.app.home;
-	const { hero, how, install } = copy;
+	const { hero, how, demo, bench } = copy;
 	const labels = t.components["site-shell"].copy;
-	const demoLabels = {
-		removed: copy.skills.removed,
-		added: copy.skills.added,
+	const cardLabels = {
 		before: copy.skills.before,
 		after: copy.skills.after,
+		open: copy.skills.open,
 	};
 	// Texto das próprias skills: é com ele que o `cd/` do hero é desenhado.
 	const pool = skills
@@ -46,12 +46,22 @@ export default async function Home() {
 		[how.step2, how.text2],
 		[how.step3, how.text3],
 	] as const;
+	const walk = skills.flatMap((skill) => {
+		const idea = content(skill.slug)?.idea;
+		return idea ? [walkItem(skill, idea, locale)] : [];
+	});
+	const benches = skills.flatMap((skill) => {
+		const data = readBench(skill.slug);
+		return data ? [{ skill, data }] : [];
+	});
+	let n = 1;
 
 	return (
 		<>
-			<section className="wrap grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[min(calc(100dvh-14rem),44rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
-				<div>
-					<p className="enter font-mono text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
+			<section className="wrap relative isolate grid items-center gap-12 pt-16 pb-4 sm:pt-24 lg:min-h-[min(calc(100dvh-14rem),44rem)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10 lg:pt-12">
+				<div aria-hidden="true" className="grid-bg absolute inset-0 -z-10" />
+				<div className="min-w-0">
+					<p className="enter font-mono text-muted-foreground text-xs tracking-[0.1em] sm:text-sm">
 						{hero.eyebrow({ count: String(skills.length) })}
 					</p>
 					<h1 className="display mt-6 text-[clamp(2.5rem,6.4vw,5.75rem)]">
@@ -63,24 +73,50 @@ export default async function Home() {
 					<p className="enter mt-7 max-w-[44ch] text-lg text-muted-foreground sm:text-xl">
 						<Rich text={hero.sub} />
 					</p>
-					<div className="enter mt-9 flex flex-wrap items-center gap-3">
-						<Button
-							nativeButton={false}
-							render={<a href="#instalar" />}
-							size="lg"
-							variant="brand"
-						>
-							{hero.install}
-						</Button>
-						<Button
-							nativeButton={false}
-							render={<a href="#skills" />}
-							size="lg"
-							variant="ghost"
-						>
-							{hero.browse}
-							<span aria-hidden="true">↓</span>
-						</Button>
+					<div className="enter mt-9 max-w-[40rem]">
+						<InstallPanel
+							agents={{
+								label: t.app.install.agents,
+								done: t.app.install.agentsDone,
+								prompt: t.app.install.agentsPrompt({ command: installAll }),
+							}}
+							aside={
+								<a
+									className="rounded-sm font-mono text-muted-foreground text-sm outline-none transition-colors duration-150 hover:text-foreground focus-visible:ring-2 focus-visible:ring-brand"
+									href="#skills"
+								>
+									{hero.browse} <span aria-hidden="true">↓</span>
+								</a>
+							}
+							copy={labels}
+							label={t.app.install.tabs}
+							large
+							manual={{
+								label: t.app.install.manual,
+								body: (
+									<>
+										<p>
+											<Rich text={t.app.install.manualClaude} />
+										</p>
+										<p>
+											<Rich text={t.app.install.manualOthers} />
+										</p>
+									</>
+								),
+							}}
+							tabs={[
+								{
+									id: "all",
+									label: t.app.install.all,
+									command: installAll,
+								},
+								...skills.map((skill) => ({
+									id: skill.slug,
+									label: skill.name,
+									command: installOne(skill.slug),
+								})),
+							]}
+						/>
 					</div>
 				</div>
 				<div className="hero-art relative mx-auto mb-28 aspect-[2/1] w-full max-w-[36rem]">
@@ -95,72 +131,81 @@ export default async function Home() {
 			<Section
 				id="skills"
 				label={copy.skills.label}
-				n={1}
+				n={n++}
 				title={copy.skills.title}
 			>
 				{skills.length === 0 ? (
 					<p className="text-muted-foreground">{copy.skills.empty}</p>
 				) : (
-					<ul className="border-b">
-						{skills.map((skill, i) => {
-							const landing = content(skill.slug);
-							return (
-								<li
-									data-reveal
-									className="row relative border-t outline-offset-[-2px] outline-ring has-[a:focus-visible]:outline-2"
-									key={skill.slug}
-								>
-									<span
-										aria-hidden="true"
-										className="row-line absolute inset-x-0 -top-px h-px bg-brand"
-									/>
-									<div className="grid items-start gap-x-8 gap-y-6 py-8 sm:py-10 xl:grid-cols-[4.5rem_minmax(0,1fr)_22rem_5rem]">
-										<span className="row-index font-bold font-mono text-[2.5rem] text-muted-foreground leading-none tabular-nums sm:text-[3.25rem]">
-											{pad(i + 1)}
-										</span>
-										<div className="min-w-0">
-											<h3 className="font-bold font-mono text-[clamp(1.75rem,3.1vw,2.5rem)] leading-tight tracking-[-0.03em]">
-												<Link
-													className="whitespace-nowrap outline-none after:absolute after:inset-0"
-													href={localePath(locale, `/${skill.slug}`)}
-												>
-													{skill.name}
-												</Link>
-											</h3>
-											<p className="mt-3 max-w-[42ch] text-lg text-muted-foreground">
-												{landing
-													? pick(landing.tagline, locale)
-													: firstSentence(skill.description[locale])}
-											</p>
-										</div>
-										{landing?.idea ? (
-											<MiniDemo
-												idea={landing.idea}
-												labels={demoLabels}
-												locale={locale}
-											/>
-										) : (
-											<span />
-										)}
-										<span
-											aria-hidden="true"
-											className="row-open hidden justify-self-end font-mono text-muted-foreground xl:block"
-										>
-											{copy.skills.open}{" "}
-											<span className="row-arrow inline-block">→</span>
-										</span>
-									</div>
-								</li>
-							);
-						})}
+					<ul className="relative grid border-t border-l lg:grid-cols-3">
+						<Corners />
+						{skills.map((skill, i) => (
+							<SkillCard
+								key={skill.slug}
+								labels={cardLabels}
+								locale={locale}
+								n={i + 1}
+								skill={skill}
+							/>
+						))}
 					</ul>
 				)}
 			</Section>
 
-			<Section id="como-funciona" label={how.label} n={2} title={how.title}>
-				<ol className="grid gap-x-10 gap-y-12 md:grid-cols-3">
+			{walk.length > 0 && (
+				<Section
+					id="na-pratica"
+					intro={demo.intro}
+					label={demo.label}
+					n={n++}
+					title={demo.title}
+				>
+					<div data-reveal>
+						<Walkthrough
+							items={walk}
+							labels={{
+								steps: demo.steps,
+								pick: demo.pick,
+								removed: copy.skills.removed,
+								added: copy.skills.added,
+								list: [
+									{ title: demo.step1, text: <Rich text={demo.text1} /> },
+									{ title: demo.step2, text: <Rich text={demo.text2} /> },
+									{ title: demo.step3, text: <Rich text={demo.text3} /> },
+								],
+							}}
+						/>
+					</div>
+				</Section>
+			)}
+
+			{benches.length > 0 && (
+				<Section
+					id="benchmark"
+					intro={bench.intro}
+					label={bench.label}
+					n={n++}
+					title={bench.title}
+				>
+					<div className="flex flex-col gap-16">
+						{benches.map(({ skill, data }) => (
+							<div data-reveal key={skill.slug}>
+								<BenchTable bench={data} labels={bench} slug={skill.slug} />
+							</div>
+						))}
+					</div>
+				</Section>
+			)}
+
+			<Section id="como-funciona" label={how.label} n={n++} title={how.title}>
+				<ol className="relative grid border md:grid-cols-3 md:divide-x">
+					<Corners />
 					{steps.map(([title, text], i) => (
-						<li className="border-t pt-6" data-reveal key={title}>
+						<li
+							className="border-b p-6 last:border-b-0 sm:p-8 md:border-b-0"
+							data-reveal
+							key={title}
+						>
 							<span className="font-bold font-mono text-5xl text-brand-foreground leading-none tabular-nums">
 								{pad(i + 1)}
 							</span>
@@ -171,47 +216,16 @@ export default async function Home() {
 				</ol>
 			</Section>
 
-			<Section id="instalar" label={install.label} n={3} title={install.title}>
-				<Tabs data-reveal defaultValue="cli">
-					<TabsList aria-label={install.tabs} className="w-full sm:w-fit">
-						<TabsTab
-							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
-							value="cli"
-						>
-							{install.cli}
-						</TabsTab>
-						<TabsTab
-							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
-							value="claude"
-						>
-							{install.claude}
-						</TabsTab>
-						<TabsTab
-							className="h-auto min-h-8 flex-1 whitespace-normal px-2 py-1 text-center leading-tight sm:h-8 sm:flex-none sm:px-3.5"
-							value="others"
-						>
-							{install.others}
-						</TabsTab>
-					</TabsList>
-					<TabsPanel className="mt-4 flex flex-col gap-4" value="cli">
-						<p className="max-w-[56ch] text-lg text-muted-foreground">
-							<Rich text={install.cliText} />
-						</p>
-						<CommandLine command={installAll} copy={labels} large />
-						<CommandLine command={installOne("<skill>")} copy={labels} large />
-					</TabsPanel>
-					<TabsPanel className="mt-4" value="claude">
-						<p className="max-w-[56ch] rounded-xl border bg-card p-6 text-lg sm:p-8">
-							<Rich text={install.claudeText} />
-						</p>
-					</TabsPanel>
-					<TabsPanel className="mt-4" value="others">
-						<p className="max-w-[56ch] rounded-xl border bg-card p-6 text-lg sm:p-8">
-							<Rich text={install.othersText} />
-						</p>
-					</TabsPanel>
-				</Tabs>
-			</Section>
+			<CtaBand
+				avatarAlt=""
+				command={installAll}
+				copy={labels}
+				github={t.app.cta.github}
+				githubUrl={site.github}
+				label={t.app.cta.label}
+				text={t.app.cta.text}
+				title={t.app.cta.title}
+			/>
 		</>
 	);
 }

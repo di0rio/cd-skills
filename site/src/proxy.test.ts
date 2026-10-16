@@ -31,6 +31,12 @@ describe("proxy", () => {
 		expect(run("/pt").headers.get("location")).toBe("http://localhost:3000/");
 	});
 
+	test("og:image interna em /pt passa sem redirect", () => {
+		const res = run("/pt/blog/opengraph-image");
+		expect(res.status).toBe(200);
+		expect(res.headers.get("location")).toBeNull();
+	});
+
 	test("/english não conta como /en", () => {
 		expect(rewrite(run("/english"))).toBe("http://localhost:3000/pt/english");
 	});
