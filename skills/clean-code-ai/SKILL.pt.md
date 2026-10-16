@@ -1,6 +1,6 @@
 ---
 name: clean-code-ai
-description: Mantém o código simples, curto e sem overengineering. Use sempre que for escrever, corrigir, refatorar ou revisar código: feature nova, bugfix, refactor, code review, escolha de biblioteca, arquitetura, estilo (CSS) ou estado. Entrega a menor solução correta, segura e compatível com o projeto, no menor escopo que funciona (KISS, YAGNI, menor mudança correta, causa raiz, contratos preservados). Também dispara com "simples", "mínimo", "yagni", "sem overengineering", "segue o padrão do projeto", ou quando aparecer camada nova, dependência desnecessária, CSS/estado global "pra reaproveitar", lint silenciado ou catch vazio. Mínimo é o menor correto, nunca o menos seguro. Não use para pedidos que não são de código.
+description: Mantém o código simples e evita complexidade sem necessidade. Use ao escrever, corrigir, refatorar ou revisar código, incluindo features, bugs, arquitetura, bibliotecas, CSS e estado. Busca a menor solução correta, segura e compatível com o projeto. Também é ativada por pedidos como "simples", "mínimo", "YAGNI" e "segue o padrão do projeto", ou por sinais de complexidade desnecessária. A simplicidade nunca deve comprometer a segurança. Não use para pedidos que não envolvem código.
 argument-hint: "[lite|full|ultra|off]"
 ---
 

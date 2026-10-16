@@ -1,6 +1,6 @@
 ---
 name: portfolio-demo
-description: Planeja, prepara, captura ou repassa, verifica e integra vídeos de demonstração de projetos do portfólio. Dois modos - o dono grava no Recordly (ou outro gravador de tela) a partir do roteiro do agente, ou o agente captura o vídeo por script (Playwright + screencast do navegador + ffmpeg). Use quando o usuário pedir pra gravar, demonstrar ou mostrar um projeto em vídeo, citar o Recordly, uma demo de produto ou um vídeo pro portfólio. NÃO use para screenshots, GIFs de terminal, tutoriais ou texto de marketing.
+description: Planeja, prepara, grava ou orienta a gravação de vídeos de demonstração para projetos de portfólio. O agente pode capturar o vídeo por script, ou você pode gravá-lo no Recordly seguindo o roteiro. Use ao criar uma demo de produto ou vídeo para o portfólio. Não use para screenshots, GIFs de terminal, tutoriais ou textos de marketing.
 ---
 
 # Portfolio Demo

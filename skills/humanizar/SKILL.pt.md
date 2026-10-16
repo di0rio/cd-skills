@@ -1,6 +1,6 @@
 ---
 name: humanizar
-description: Reescreve textos com "cara de IA" para soarem escritos pela pessoa que assina, escreve do zero na voz dela e usa textos de referência só como inspiração. Use sempre que o usuário pedir para humanizar, naturalizar, "tirar cara de ChatGPT/IA", deixar menos robótico, menos genérico, mais natural ou mais "meu", revisar o tom de um texto, ou mandar um texto de outra pessoa dizendo "algo nessa linha". Use também, sem o usuário pedir, ao redigir posts de LinkedIn/redes, descrição de projeto de portfólio, bio, "sobre mim", copy de site ou landing, README voltado a pessoas, redação, resumo, introdução ou conclusão de trabalho acadêmico. Cobre PT-BR e EN. Não use para código, mensagens de commit ou respostas curtas de chat.
+description: Reescreve textos para que soem como quem os assina, redige na voz da pessoa e usa referências como inspiração, sem copiar. Use ao revisar o tom de um texto, deixá-lo mais natural ou menos genérico, ou escrever posts, bios, páginas de portfólio, sites, READMEs e textos acadêmicos. Funciona em português e inglês. Não use para código, mensagens de commit ou respostas curtas de chat.
 ---
 
 # Humanizar
